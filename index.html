@@ -131,6 +131,23 @@ ol.tl{list-style:none;margin:0;padding:0}
 .menu{font-size:14px;margin-top:8px;padding:8px 10px;background:var(--soft);border-radius:8px}
 .menu span{color:var(--mute);margin-right:4px}
 .menu b{display:inline-block;margin-left:8px;color:var(--gold);font-weight:500;white-space:nowrap}
+.spots{display:grid;gap:12px}
+.guide{margin-top:18px;padding:18px 20px}.guide h3{font-family:"Nanum Myeongjo",serif;font-size:22px;margin:4px 0 6px}.guide .ghead p{margin:0 0 6px;font-size:15px}
+.guide details{border-top:1px solid var(--line);padding:4px 0}.guide summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:46px;font-weight:500}
+.guide summary::-webkit-details-marker{display:none}.guide summary::after{content:"+";font-size:22px;color:var(--gold);transition:transform .2s}.guide details[open] summary::after{transform:rotate(45deg)}
+.dbody{padding:2px 0 12px}.gt{width:100%;border-collapse:collapse;font-size:14px}.gt th,.gt td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}.gt th{color:var(--mute);font-weight:400;font-size:13px}
+@media(max-width:600px){.gt tr{display:grid;grid-template-columns:1fr 1fr;padding:8px 0;border-bottom:1px solid var(--line)}.gt th{display:none}.gt td{border:0;padding:2px 0}.gt td:first-child{grid-column:1/-1;font-weight:700}.gt td:last-child{grid-column:1/-1;color:var(--mute)}}
+.msum{display:grid;gap:18px;padding:20px}.mbig{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:clamp(32px,6vw,44px);line-height:1.1;font-variant-numeric:tabular-nums}
+.mset{font-size:20px;margin:4px 0}.mset b{color:var(--gold);font-family:"Nanum Myeongjo",serif;font-size:26px}
+.mbars{display:grid;gap:6px}.mrow{display:grid;grid-template-columns:72px minmax(0,1fr) 90px;gap:8px;align-items:center;font-size:14px}.mrow i{height:8px;background:var(--line);border-radius:6px;overflow:hidden}.mrow i b{display:block;height:100%;background:var(--gold);border-radius:6px}.mrow em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mform{margin-top:16px;padding:16px;display:grid;gap:12px}.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chipbtn{font:inherit;font-size:14px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:7px 12px;min-height:38px;cursor:pointer}.chipbtn.on{background:var(--gold);border-color:var(--gold);color:#1a1410;font-weight:500}
+.minput{font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-height:44px}
+.mgrid{display:grid;grid-template-columns:140px minmax(0,1fr) 240px;gap:8px}.amtrow{display:grid;grid-template-columns:minmax(0,1fr) 100px;gap:8px}
+.mgrid2{display:flex;gap:14px;flex-wrap:wrap;align-items:center}.seg{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.seg .sub{font-size:13px;margin-right:2px}.mgrid2 .btn.pri{margin-left:auto;min-width:96px}
+@media(max-width:700px){.mgrid{grid-template-columns:minmax(0,1fr)}.mgrid2 .btn.pri{width:100%;margin-left:0}}
+.mi{grid-template-columns:minmax(0,1fr) auto auto!important}.mamt{text-align:right;font-variant-numeric:tabular-nums;font-weight:500;white-space:nowrap}.mamt small{display:block;color:var(--mute);font-weight:400;font-size:12px}.scard.focus{outline:2px solid var(--gold);outline-offset:2px}
+#photo .mapbox{position:sticky;top:64px}@media(max-width:860px){#photo .mapbox{position:relative;top:0}}
 .eat{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:14px}
 .ecard{display:flex;flex-direction:column}.ecard .acts{margin-top:auto;padding-top:10px}
 .addday{font-weight:500}.addday.on{background:var(--c)!important;border-color:var(--c)!important;color:#fff!important}
@@ -317,6 +334,7 @@ if(!S||!S.days)S=JSON.parse(JSON.stringify(DEFAULT));
 if(!S.checks)S.checks=seedChecks();
 if(!S.gifts)S.gifts=seedGifts();
 if(!S.deliv)S.deliv=seedDeliv();
+if(!S.money)S.money={rate:195,items:[{id:uid(),day:-1,cat:'숙소',t:'호텔 2박 (트립닷컴)',amt:251506,cur:'KRW',payer:'a',split:'both'}]};
 S.days.forEach(d=>{const D=DEFAULT.days.find(x=>x.id===d.id);if(D)d.color=D.color});
 let cur=(()=>{try{return +sessionStorage.getItem('sh-cur')||0}catch(e){return 0}})(),view=null,pinFor=null,pendingPin=null,undoStack=[];
 
@@ -386,19 +404,19 @@ function heroSVG(){
  <g mask="url(#m)"><g filter="url(#bl)" transform="translate(0 660) scale(1 -1)">${city}</g></g>
  <g stroke="var(--ink)" stroke-width="3" opacity=".7"><line x1="905" y1="330" x2="905" y2="200"/><line x1="905" y1="200" x2="940" y2="196"/></g><circle cx="944" cy="197" r="5" fill="var(--win)" class="lit"/>
  <rect y="329" width="1200" height="2" fill="var(--win)" opacity=".35"/></svg>`}
-const SECS=[['plan','Itinerary','동선표','하루씩 한 줄로'],['check','Before we leave','준비','한국에서 끝낼 것들'],['eat','Where to eat','맛집','한국인 픽'],['deliv','Room service','배달','호텔로 시키기'],['gift','Bring home','기념품','쇼핑 리스트']];
+const SECS=[['plan','Itinerary','동선표','하루씩 한 줄로'],['photo','Photo spots','사진 스팟','야경 · 낮'],['check','Before we leave','준비','한국에서 끝낼 것들'],['eat','Where to eat','맛집','한국인 픽'],['deliv','Room service','배달','호텔로 시키기'],['gift','Bring home','기념품','쇼핑 리스트'],['money','Expenses','가계부','정산']];
 function shead(k){const x=SECS.find(y=>y[0]===k);return`<div class="shead"><span class="kicker">${x[1]}</span><h2 class="stitle">${x[2]} <em>${x[3]}</em></h2></div>`}
 function shell(){$('#app').innerHTML=`
  <header class="topbar" id="topbar"><a href="#top" class="brand">Shanghai <span>’27</span></a><nav class="tnav" aria-label="섹션">${SECS.map(x=>`<a href="#${x[0]}">${x[2]}</a>`).join('')}</nav></header>
  <section class="cover" id="top"><div class="hero">${heroSVG()}<img class="photo" src="cover.jpg" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://unsplash.com/photos/DCEuAVqX6lk/download?w=2400'}else{this.remove()}" onload="this.classList.add('on');if(this.dataset.f)document.getElementById('credit').hidden=false"></div>
-  <div class="covertext"><span class="en">Shanghai</span><small>야콩 &amp; 쑴니 · 01.03 — 01.05.2027</small></div>
+  <div class="covertext"><span class="en">Shanghai</span><small>01.03 — 01.05.2027</small></div>
   <a class="scrollcue" href="#index" aria-label="아래로">scroll</a><a class="credit" id="credit" hidden href="https://unsplash.com/photos/DCEuAVqX6lk">Photo · Scott Stefan / Unsplash</a></section>
  <section class="band index" id="index"><div class="kicker">Contents</div>
   <div class="tiles">${SECS.map(x=>`<a class="tile" href="#${x[0]}"><span class="kicker">${x[1]}</span><span class="tname">${x[2]}</span><span class="tsub">${x[3]}</span><span class="arr" aria-hidden="true">↓</span></a>`).join('')}</div></section>
  ${SECS.map(x=>`<section class="chapter" id="${x[0]}"><div id="sec-${x[0]}"></div></section>`).join('')}
- <footer class="band foot2">Shanghai ’27 · 야콩 &amp; 쑴니</footer>`;
+ <footer class="band foot2">Shanghai ’27</footer>`;
  const tb=$('#topbar'),cv=$('.cover');try{new IntersectionObserver(([e])=>tb.classList.toggle('show',!e.isIntersecting),{threshold:.15}).observe(cv)}catch(e){tb.classList.add('show')}}
-function renderAll(){render();renderCheck();renderEat();renderDeliv();renderGift()}
+function renderAll(){render();renderPhoto();renderMoney();renderCheck();renderEat();renderDeliv();renderGift()}
 function render(){
  const day=S.days[cur];$('#plan').style.setProperty('--c',day.color);const P=plan(day);
  $('#sec-plan').innerHTML=`
@@ -414,6 +432,30 @@ function render(){
     <div class="route"><span>체크인</span><span class="big">14:00</span><span class="arrow"></span><span>체크아웃</span><span class="big">12:00</span></div>
     <div class="must">무료 취소는 <b>1/2 12:00</b> (현지시각) 전까지</div></div>
   </div>
+  <section class="guide card"><div class="ghead"><span class="kicker">Airport → Hotel</span><h3>푸동공항에서 호텔까지</h3>
+   <p><b>추천: 디디(DiDi)로 호텔 앞까지 한 번에.</b> 둘이 캐리어를 들고 낮 11시쯤 나오니까 갈아타는 것보다 편해요. 약 50분, 대략 $22~30이에요.</p></div>
+   <details><summary>이동 방법 비교</summary><div class="dbody"><table class="gt"><tr><th>방법</th><th>시간</th><th>요금</th><th>메모</th></tr>
+    <tr><td>디디 · 택시</td><td>약 50분</td><td>약 $22~30</td><td>호텔 앞 도착 · 짐 있으면 최고</td></tr>
+    <tr><td>자기부상열차 + 2호선</td><td>약 50분</td><td>¥50 (당일 탑승권 보여주면 ¥40) + 지하철</td><td>롱양루역에서 2호선 환승 · 20분 간격</td></tr>
+    <tr><td>지하철 2호선</td><td>약 70분</td><td>약 ¥7</td><td>가장 저렴 · 광란루역 환승이 헷갈릴 수 있어요</td></tr></table></div></details>
+   <details><summary>디디 부르는 법 (알리페이 안에서)</summary><div class="dbody"><ol class="steps">
+    <li>짐 찾고 나와서 <b>Taxi 표지판이 아니라 「网约车 / E-hailing」 표지판</b>을 따라 <b>지하 1층 주차장</b>으로 가요. 앱 호출 차량 타는 곳은 일반 택시 승강장과 따로 있어요.</li>
+    <li>알리페이 홈에서 <b>DiDi</b> (또는 「Transport」)를 눌러요. 앱을 따로 깔지 않아도 돼요.</li>
+    <li><b>출발지</b>: 위치 권한을 허용하면 잡혀요. 핀이 이상하면 화면에 뜨는 추천 탑승 지점(上车点)을 골라요.</li>
+    <li><b>목적지</b>: 아래 「호텔 주소 복사」를 눌러 붙여넣거나 <span class="zh">锦江都城南京饭店</span>을 검색해요.</li>
+    <li>기본 차종(快车)을 골라요. 배차되면 <b>차량 번호판</b>을 꼭 확인하고 타요. 기사님이 위치 확인 전화를 할 수 있어요. 앱 메시지는 자동 번역돼요.</li>
+    <li>도착하면 <b>알리페이에 등록한 카드로 자동 결제</b>돼요. 따로 낼 필요 없어요.</li></ol>
+    <div class="addr"><div><small>목적지 (호텔)</small><div class="zh">${esc(HOTEL_ZH)}</div></div><button class="btn pri" data-copy="${esc(HOTEL_ZH)}">호텔 주소 복사</button></div></div></details>
+   <details><summary>디디가 안 잡히면: 일반 택시</summary><div class="dbody"><ul class="steps">
+    <li>공항 표지판을 따라 <b>지정 택시 승강장</b>에서 줄을 서서 타요. 줄 밖에서 말 거는 호객꾼은 따라가지 마세요.</li>
+    <li>기사님께 호텔 중국어 주소를 보여주고, <b>미터기</b>가 켜졌는지 봐요. 시내 택시 기본요금은 3km까지 ¥14 정도예요.</li>
+    <li>결제는 알리페이 QR로 하면 돼요. 비상용 현금도 조금 있으면 안심이에요.</li>
+    <li><b>영수증을 꼭 받아요.</b> 차량 번호와 택시 회사가 적혀 있어서 물건을 두고 내렸을 때 찾을 수 있어요.</li></ul></div></details>
+   <details><summary>1/5 호텔 → 공항</summary><div class="dbody"><ul class="steps">
+    <li>호텔 앞에서 디디를 불러요. 목적지는 <span class="zh">浦东国际机场T1航站楼</span> (동방항공은 T1)이에요.</li>
+    <li>푸동공항 <b>14:45</b>까지 도착하는 게 목표예요. 동선표 1/5의 「늦어도 출발」 시간을 확인하세요.</li></ul>
+    <div class="addr"><div><small>목적지 (공항)</small><div class="zh">浦东国际机场T1航站楼</div></div><button class="btn" data-copy="浦东国际机场T1航站楼">공항 이름 복사</button></div></div></details>
+  </section>
   <div class="alert"><b>무비자 확인 필요</b> — 한국인 30일 무비자는 지금 2026.12.31까지만 공지돼 있고, 2027년 연장은 아직 발표 전이에요(11/26 기준). <a href="#check" style="color:inherit">준비 체크리스트 보기</a></div>
   <div class="tabs" role="tablist">${S.days.map((d,i)=>`<button class="tab" role="tab" data-tab="${i}" aria-selected="${i===cur}" style="${i===cur?`background:${d.color};border-color:${d.color}`:''}"><span class="en">${['Jan 3','Jan 4','Jan 5'][i]||''}</span> ${esc(d.title)}</button>`).join('')}</div>
  </section>
@@ -454,6 +496,69 @@ function renderCheck(){const C=S.checks;const n=C.length,na=C.filter(c=>c.a).len
  </main>`;
  $('#addck').onsubmit=e=>{e.preventDefault();const t=$('#ck-t').value.trim();if(!t)return;S.checks.push({id:uid(),sec:$('#ck-sec').value,t,d:'',a:false,b:false,custom:true});changed();renderCheck()};syncLabel()}
 
+const SPOTS=[
+ {k:'night',name:'와이탄 산책로 (점등 순간)',zh:'外滩观景平台',lng:121.4905,lat:31.2400,when:'매일 저녁 7시 점등 무렵',tip:'38개 건물 불이 10초 안에 차례로 켜져요 · 난간 쪽에 자리 잡고 동방명주를 대각선으로 · 30분 전 도착',stay:60,want:'18:40'},
+ {k:'night',name:'외백도교',zh:'外白渡桥',lng:121.4910,lat:31.2460,when:'해 진 뒤',tip:'와이탄 북쪽 끝 철교 · 다리 아치 사이로 루자쭈이 빌딩을 넣어 찍기',stay:30},
+ {k:'night',name:'예원 야경',zh:'豫园',lng:121.4920,lat:31.2272,when:'해 진 뒤 (1월 일몰 약 17:10)',tip:'금빛 조명 켜진 전통 누각 · 왕홍 체험 후 한푸 입고 찍기 좋아요',stay:60},
+ {k:'night',name:'루자쭈이 원형 육교',zh:'陆家嘴环形天桥',lng:121.5020,lat:31.2385,when:'저녁',tip:'동방명주 바로 앞 · 빌딩 숲을 올려다보는 구도, 광각으로 진마오 타워까지',stay:40},
+ {k:'day',name:'우캉맨션',zh:'武康大楼',lng:121.4375,lat:31.2045,when:'맑은 낮',tip:'교차로 건너편에서 건물 전체를 · 사람 많으면 근처 카페 2층 창가에서',stay:40},
+ {k:'day',name:'우캉루 · 안푸루 골목',zh:'武康路 · 安福路',lng:121.4400,lat:31.2120,when:'낮 (우캉맨션과 묶어서)',tip:'유럽풍 건물과 편집숍 거리 · 최소 2시간 산책 추천',stay:90},
+ {k:'day',name:'1933 라오창팡',zh:'1933老场坊 沙泾路10号',lng:121.4930,lat:31.2580,when:'낮',tip:'옛 도축장을 바꾼 콘크리트 미로 · 다리, 경사로, 나선 계단이 사진 포인트',stay:60},
+ {k:'day',name:'와이탄 클래식 건물 (낮)',zh:'外滩 中山东一路',lng:121.4888,lat:31.2372,when:'낮 · 흐린 날도 분위기 있어요',tip:'석조 건물과 시계탑 앞 횡단보도 · 강 건너 동방명주까지 한 컷',stay:40},
+ {k:'day',name:'티엔즈팡',zh:'田子坊',lng:121.4665,lat:31.2105,when:'낮',tip:'좁은 골목과 스쿠먼 건물 · 홀리랜드 수건케이크 지점도 근처',stay:60},
+ {k:'day',name:'신천지 스쿠먼 거리',zh:'新天地',lng:121.4750,lat:31.2195,when:'낮~저녁',tip:'회색 벽돌 스쿠먼 건물 사이 카페거리',stay:60}];
+let spotFilter='all',spotFocus=null;
+function keepForm(fn){const v={d:$('#m-day')?.value,t:$('#m-t')?.value,a:$('#m-amt')?.value,c:$('#m-cur')?.value};fn();if(v.d!=null)$('#m-day').value=v.d;$('#m-t').value=v.t||'';$('#m-amt').value=v.a||'';if(v.c)$('#m-cur').value=v.c}
+function renderPhoto(){const L=SPOTS.map((p,i)=>({...p,i})).filter(p=>spotFilter==='all'||p.k===spotFilter);
+ $('#sec-photo').innerHTML=`<main class="band">${shead('photo')}
+  <p class="sub" style="margin-bottom:14px">상하이에서 사진 많이 찍는 곳이에요. 핀을 누르면 카드로 이동하고, 날짜 버튼을 누르면 동선표에 바로 들어가요.</p>
+  <div class="bar" role="group" aria-label="스팟 종류">${[['all','전체'],['night','야경 스팟'],['day','낮 스팟']].map(([k,t])=>`<button class="btn ${spotFilter===k?'pri':''}" data-sf="${k}">${t}</button>`).join('')}</div>
+  <div class="grid"><section class="mapbox"><div class="fig" style="cursor:default;touch-action:auto"><svg id="smap" aria-label="사진 스팟 지도"></svg></div>
+   <div class="legend"><span><b style="color:#e0b25c">●</b> 야경 스팟</span><span><b style="color:#c46a4e">●</b> 낮 스팟</span><span>◆ 호텔</span><span>파란 띠 = 황푸강(개략)</span></div></section>
+  <div class="spots">${L.map(p=>`<article class="card scard ${spotFocus===p.i?'focus':''}" id="spot-${p.i}"><div class="ttl"><span class="num" style="background:${p.k==='night'?'#b58a35':'#a9533c'}">${p.i+1}</span>${esc(p.name)} <span class="chip">${p.k==='night'?'야경':'낮'}</span></div>
+   <div class="meta"><span class="zh">${esc(p.zh)}</span> · ${esc(p.when)}</div><div class="note">${esc(p.tip)}</div>
+   <div class="acts">${S.days.map((d,j)=>`<button class="addday ${inDay(p,j)?'on':''}" data-addspot="${p.i}" data-day="${j}">${inDay(p,j)?'✓ ':'+ '}${esc(d.label.split(' ')[0])}</button>`).join('')}<a class="amap" href="${esc(amapPin(p))}">고덕지도</a></div></article>`).join('')}</div></div>
+  <p class="foot">와이탄 점등은 「매일 저녁 7시」로 보도된 기준이라 1월에는 달라질 수 있어요. 현지에서 한 번 더 확인하세요. 좌표는 근사치예요.</p></main>`;
+ drawSpots(L)}
+function drawSpots(L){const svg=$('#smap');if(!svg)return;const W=svg.clientWidth,H=svg.clientHeight;if(!W)return;const ky=1/Math.cos(rad(31.2));
+ const pts=[...L,HOTEL];let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;pts.forEach(p=>{x0=Math.min(x0,p.lng);x1=Math.max(x1,p.lng);y0=Math.min(y0,p.lat);y1=Math.max(y1,p.lat)});
+ const cx=(x0+x1)/2,cy=(y0+y1)/2,span=Math.max(x1-x0,(y1-y0)*ky,.02)*1.3,sc=Math.min(W,H)/span;const X=l=>W/2+(l-cx)*sc,Y=a=>H/2-(a-cy)*sc*ky;
+ let g=`<rect width="${W}" height="${H}" fill="var(--paper)"/><polyline points="${RIVER.map(p=>X(p[0])+','+Y(p[1])).join(' ')}" fill="none" stroke="var(--river)" stroke-width="${Math.max(8,.0045*sc)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+ const hx=X(HOTEL.lng),hy=Y(HOTEL.lat);g+=`<rect x="${hx-7}" y="${hy-7}" width="14" height="14" transform="rotate(45 ${hx} ${hy})" fill="var(--ink)"/><text x="${hx+12}" y="${hy+4}" font-size="11" fill="var(--mute)">호텔</text>`;
+ const placed=[];L.forEach(p=>{const x=X(p.lng),y=Y(p.lat),c=p.k==='night'?'#e0b25c':'#c46a4e',f=spotFocus===p.i;let ly=y+4,lx=x+18;let tries=0;while(placed.some(q=>Math.abs(q[1]-ly)<15&&Math.abs(q[0]-lx)<130)&&tries<8){ly+=(tries%2?-1:1)*16*(Math.floor(tries/2)+1);tries++}placed.push([lx,ly]);
+  g+=`<g class="spin" data-spin="${p.i}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="${f?17:14}" fill="${c}" stroke="var(--paper)" stroke-width="2"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="12" font-weight="700" fill="#1a1410">${p.i+1}</text>
+  ${Math.abs(ly-y-4)>1?`<line x1="${x+12}" y1="${y}" x2="${lx-2}" y2="${ly-4}" stroke="var(--mute)" stroke-width="1"/>`:''}<text x="${lx}" y="${ly}" font-size="11.5" fill="var(--ink)" stroke="var(--paper)" stroke-width="3" paint-order="stroke">${esc(p.name.length>11?p.name.slice(0,10)+'…':p.name)}</text></g>`});
+ svg.innerHTML=g}
+function addSpot(i,j){const p=SPOTS[i],d=S.days[j];if(inDay(p,j)){toast(`이미 ${d.label}에 있어요`);return}snap();
+ const st={id:uid(),name:p.name,zh:p.zh,lng:p.lng,lat:p.lat,type:p.k==='night'?'night':'spot',note:`${p.when} · ${p.tip}`,stay:p.stay,want:p.want||''};
+ const ti=d.stops.findIndex(x=>x.tail);if(ti<0)d.stops.push(st);else d.stops.splice(ti,0,st);changed();renderPhoto();render();toast(`${d.label} 동선표에 넣었어요`)}
+const CATS=['식비','카페·간식','택시','지하철','쇼핑','입장·체험','숙소','항공','기타'];
+const WHO={a:'야콩',b:'쑴니'};
+let mf={cat:'식비',payer:'a',split:'both',cur:'CNY'};
+const won=n=>'₩'+Math.round(n).toLocaleString('ko-KR');
+const toKRW=x=>x.cur==='KRW'?x.amt:x.amt*(+S.money.rate||0);
+function settle(){const M=S.money;let paid={a:0,b:0},share={a:0,b:0};M.items.forEach(x=>{const v=toKRW(x);paid[x.payer]+=v;if(x.split==='both'){share.a+=v/2;share.b+=v/2}else share[x.split]+=v});return{paid,share,bal:{a:paid.a-share.a,b:paid.b-share.b},total:paid.a+paid.b}}
+function renderMoney(){const M=S.money,st=settle();const byCat=CATS.map(c=>[c,M.items.filter(x=>x.cat===c).reduce((s,x)=>s+toKRW(x),0)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);const mx=Math.max(1,...byCat.map(x=>x[1]));
+ const owe=st.bal.a>1?`쑴니 → 야콩 <b>${won(st.bal.a)}</b>`:st.bal.b>1?`야콩 → 쑴니 <b>${won(st.bal.b)}</b>`:'정산할 돈 없음';
+ const days=[[-1,'출발 전'],...S.days.map((d,i)=>[i,d.label])];
+ $('#sec-money').innerHTML=`<main class="band">${shead('money')}
+  <div class="msum card"><div><span class="kicker">총 지출</span><div class="mbig">${won(st.total)}</div><small class="sub">1인 평균 ${won(st.total/2)}</small></div>
+   <div><span class="kicker">정산</span><div class="mset">${owe}</div><small class="sub">야콩 낸 돈 ${won(st.paid.a)} · 쑴니 낸 돈 ${won(st.paid.b)}</small></div>
+   <div class="mbars">${byCat.map(([c,v])=>`<div class="mrow"><span>${esc(c)}</span><i><b style="width:${v/mx*100}%"></b></i><em>${won(v)}</em></div>`).join('')||'<small class="sub">아직 기록이 없어요</small>'}</div>
+   <div class="bar" style="margin:0"><label class="sub" for="m-rate" style="font-size:13px">환율 1위안 =</label><input id="m-rate" class="minput" style="width:90px" inputmode="decimal" value="${esc(M.rate)}"><span class="sub" style="font-size:13px">원 (결제일 환율로 고쳐 쓰세요)</span><button class="btn" data-act="mcopy">카톡용 정산 복사</button><span class="sync"></span></div></div>
+  <form class="card mform" id="mform"><div class="chips">${CATS.map(c=>`<button type="button" class="chipbtn ${mf.cat===c?'on':''}" data-mcat="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+   <div class="mgrid"><select id="m-day" class="minput" aria-label="날짜">${days.map(([i,l])=>`<option value="${i}" ${i===(mf.day??0)?'selected':''}>${esc(l)}</option>`).join('')}</select>
+   <input id="m-t" class="minput" placeholder="내용 (예: 지아지아탕바오)" aria-label="내용">
+   <div class="amtrow"><input id="m-amt" class="minput" inputmode="decimal" placeholder="금액" aria-label="금액"><select id="m-cur" class="minput" aria-label="통화"><option value="CNY" ${mf.cur==='CNY'?'selected':''}>¥ 위안</option><option value="KRW" ${mf.cur==='KRW'?'selected':''}>₩ 원</option></select></div></div>
+   <div class="mgrid2"><div class="seg" role="group" aria-label="낸 사람"><span class="sub">낸 사람</span>${['a','b'].map(k=>`<button type="button" class="chipbtn ${mf.payer===k?'on':''}" data-mpayer="${k}">${WHO[k]}</button>`).join('')}</div>
+   <div class="seg" role="group" aria-label="나누기"><span class="sub">나누기</span>${[['both','반반'],['a','야콩 것'],['b','쑴니 것']].map(([k,l])=>`<button type="button" class="chipbtn ${mf.split===k?'on':''}" data-msplit="${k}">${l}</button>`).join('')}</div>
+   <button class="btn pri">기록</button></div></form>
+  ${days.map(([i,l])=>{const L=M.items.filter(x=>x.day===i);if(!L.length)return'';return`<section class="sec"><h2>${esc(l)} <span class="hand">${won(L.reduce((s,x)=>s+toKRW(x),0))}</span></h2><div class="cl">${L.map(x=>`<div class="ci mi"><div><div class="t">${esc(x.t||x.cat)} <span class="chip">${esc(x.cat)}</span></div><div class="d">${WHO[x.payer]} 결제 · ${x.split==='both'?'반반':WHO[x.split]+' 것'}</div></div><div class="mamt">${x.cur==='KRW'?won(x.amt):'¥'+(+x.amt).toLocaleString('ko-KR')}${x.cur==='CNY'?`<small>${won(toKRW(x))}</small>`:''}</div><button class="x" data-mdel="${esc(x.id)}" aria-label="삭제">삭제</button></div>`).join('')}</div></section>`}).join('')}
+  <p class="foot">호텔 결제 금액은 바우처 기준(₩251,506)이고 결제자를 야콩으로 넣어뒀어요. 다르면 지우고 다시 기록하세요. 위안으로 쓴 건 위 환율로 원화 환산해요.</p></main>`;
+ $('#mform').onsubmit=e=>{e.preventDefault();const amt=parseFloat($('#m-amt').value.replace(/,/g,''));if(!(amt>0)){toast('금액을 넣어주세요');return}
+  mf.day=+$('#m-day').value;mf.cur=$('#m-cur').value;S.money.items.push({id:uid(),day:mf.day,cat:mf.cat,t:$('#m-t').value.trim(),amt,cur:mf.cur,payer:mf.payer,split:mf.split});changed();renderMoney();toast('기록했어요')};
+ $('#m-rate').onchange=e=>{const v=parseFloat(e.target.value);if(v>0){S.money.rate=v;changed();renderMoney()}};syncLabel()}
+function moneyText(){const st=settle();const M=S.money;const lines=['[상해 여행 정산]',`총 지출 ${won(st.total)} (1인 ${won(st.total/2)})`,`야콩 낸 돈 ${won(st.paid.a)} / 쑴니 낸 돈 ${won(st.paid.b)}`,st.bal.a>1?`→ 쑴니가 야콩에게 ${won(st.bal.a)}`:st.bal.b>1?`→ 야콩이 쑴니에게 ${won(st.bal.b)}`:'→ 정산할 돈 없음',`(환율 1위안=${M.rate}원)`];return lines.join('\n')}
 function inDay(f,i){return S.days[i].stops.some(x=>x.name===f.name)}
 function renderEat(){
  $('#sec-eat').innerHTML=`<main class="band">${shead('eat')}
@@ -516,7 +621,7 @@ function rowHTML(day,r,i,n){const s=r.s,isA=!!r.anchor,leg=r.tr?`<li class="leg"
  const tm=r.anchor==='start'?`${toT(r.beg)}<small>${s.stay?'~'+toT(r.leave):'출발'}</small>`:r.anchor==='end'?`${toT(r.arr)}<small>도착</small>`:`${toT(r.beg)}<small>~${toT(r.leave)}</small>`;
  const editKey=r.anchor?r.anchor:s.id;
  return`${leg}<li class="stop"><div class="time">${tm}</div><div class="card ${isA?'anchor':''} ${s.lng==null?'nopin':''}">
-  <div class="ttl"><span class="num">${num}</span>${esc(s.name)}${s.type==='food'?'<span class="chip">식당</span>':s.type==='cafe'?'<span class="chip">카페·디저트</span>':''}${s.lock?'<span class="lock">순서 고정</span>':''}${s.want&&!isA?`<span class="lock">희망 ${esc(s.want)}</span>`:''}</div>
+  <div class="ttl"><span class="num">${num}</span>${esc(s.name)}${s.type==='food'?'<span class="chip">식당</span>':s.type==='cafe'?'<span class="chip">카페·디저트</span>':s.type==='night'?'<span class="chip">야경 스팟</span>':s.type==='spot'?'<span class="chip">사진 스팟</span>':''}${s.lock?'<span class="lock">순서 고정</span>':''}${s.want&&!isA?`<span class="lock">희망 ${esc(s.want)}</span>`:''}</div>
   <div class="meta">${s.zh?`<span class="zh">${esc(s.zh)}</span> · `:''}${isA?(r.anchor==='start'?(s.stay?`${s.stay}분 머무름`:''):''):`${s.stay}분 머무름`}${s.lng==null?' · <b>위치 미지정</b>':''}${r.beg>r.arr+1&&!isA?` · ${Math.round(r.beg-r.arr)}분 대기`:''}</div>
   ${s.menu||s.price?`<div class="menu"><span>추천 메뉴</span> ${esc(s.menu||'-')}${s.price?`<b>${esc(s.price)}</b>`:''}</div>`:''}
   ${s.note?`<div class="note">${esc(s.note)}</div>`:''}${warn}
@@ -621,6 +726,12 @@ async function copy(txt,msg){try{await navigator.clipboard.writeText(txt);toast(
 /* ---------- 이벤트 ---------- */
 document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab]');if(!t)return;const day=S.days[cur];const st=day.stops;
  if(t.dataset.ck){const c=S.checks.find(x=>x.id===t.dataset.ck);if(c){c[t.dataset.who]=!c[t.dataset.who];changed();renderCheck()}return}
+ if(t.dataset.mcat){mf.cat=t.dataset.mcat;keepForm(()=>renderMoney());return}
+ if(t.dataset.mpayer){mf.payer=t.dataset.mpayer;keepForm(()=>renderMoney());return}
+ if(t.dataset.msplit){mf.split=t.dataset.msplit;keepForm(()=>renderMoney());return}
+ if(t.dataset.mdel){S.money.items=S.money.items.filter(x=>x.id!==t.dataset.mdel);changed();renderMoney();return}
+ if(t.dataset.addspot!=null){addSpot(+t.dataset.addspot,+t.dataset.day);return}
+ if(t.dataset.sf){spotFilter=t.dataset.sf;spotFocus=null;renderPhoto();return}
  if(t.dataset.addfood!=null){addFood(+t.dataset.addfood,+t.dataset.day);return}
  if(t.dataset.dl){const x=S.deliv.find(y=>y.id===t.dataset.dl);if(x){x[t.dataset.who]=!x[t.dataset.who];changed();renderDeliv()}return}
  if(t.dataset.deldel){S.deliv=S.deliv.filter(y=>y.id!==t.dataset.deldel);changed();renderDeliv();return}
@@ -634,7 +745,8 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab
  if(t.dataset.pin){pinFor=t.dataset.pin;render();$('#fig').scrollIntoView({behavior:'smooth',block:'center'});return}
  if(t.dataset.up||t.dataset.down){const id=t.dataset.up||t.dataset.down,i=st.findIndex(s=>s.id===id),j=i+(t.dataset.up?-1:1);if(j<0||j>=st.length)return;snap();[st[i],st[j]]=[st[j],st[i]];save();render();return}
  const a=t.dataset.act;if(!a)return;
- if(a==='opt')optimize();
+ if(a==='mcopy')copy(moneyText(),'정산 내용을 복사했어요');
+ else if(a==='opt')optimize();
  else if(a==='add'){draft=null;openEdit('__new')}
  else if(a==='undo'){const p=undoStack.pop();if(p){S=JSON.parse(p);save();renderAll();toast('되돌렸어요')}}
  else if(a==='share')shareSave();
@@ -649,9 +761,10 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab
  else if(a==='import'){try{const o=JSON.parse(decodeURIComponent(escape(atob($('#f-code').value.trim()))));if(!o.days)throw 0;snap();S=o;save();closeSheet();renderAll();toast('불러왔어요')}catch(err){toast('코드가 올바르지 않아요')}}
  else if(a==='reset'){snap();S=JSON.parse(JSON.stringify(DEFAULT));if(!S.checks)S.checks=seedChecks();S.gifts=seedGifts();S.deliv=seedDeliv();save();closeSheet();view=null;renderAll();toast('초기화했어요 — 되돌리기 가능')}
 });
+document.addEventListener('click',e=>{const g=e.target.closest('[data-spin]');if(!g)return;spotFocus=+g.dataset.spin;renderPhoto();const c=document.getElementById('spot-'+spotFocus);if(c)c.scrollIntoView({behavior:'smooth',block:'center'})});
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'){closeSheet();draft=null}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
-const ro=new ResizeObserver(()=>{if($('#fig'))drawMap(S.days[cur],plan(S.days[cur]))});
+const ro=new ResizeObserver(()=>{if($('#smap'))drawSpots(SPOTS.map((p,i)=>({...p,i})).filter(p=>spotFilter==='all'||p.k===spotFilter));if($('#fig'))drawMap(S.days[cur],plan(S.days[cur]))});
 shell();renderAll();ro.observe(document.body);
 }
 </script>
