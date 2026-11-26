@@ -35,6 +35,7 @@ h2{font-size:22px;margin:0 0 10px}
 .zh{font-family:"Noto Serif SC",serif}
 .nav{display:flex;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px;width:max-content;max-width:100%;margin-bottom:14px}
 .nav a{padding:9px 18px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:500;font-size:15px;min-height:40px;display:flex;align-items:center}
+@media(max-width:600px){.nav a{padding:8px 12px;font-size:14px}}
 .nav a[aria-current=page]{background:var(--ink);color:var(--bg)}
 .passes{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:22px}
 .pass{background:var(--paper);border-radius:3px;padding:20px 18px 16px;display:grid;gap:8px;position:relative;box-shadow:0 1px 0 var(--line),0 10px 24px -14px rgba(60,40,30,.35)}
@@ -92,6 +93,9 @@ ol.tl{list-style:none;margin:0;padding:0}
 .acts a,.acts button{font:inherit;font-size:13px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 12px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
 .acts a.amap{background:var(--soft);border-color:transparent;font-weight:500}
 .chip{font-size:12px;background:var(--soft);border-radius:999px;padding:2px 8px;font-weight:400}
+.menu{font-size:14px;margin-top:8px;padding:8px 10px;background:var(--soft);border-radius:8px}
+.menu span{color:var(--mute);margin-right:4px}
+.menu b{display:inline-block;margin-left:8px;color:var(--gold);font-weight:500;white-space:nowrap}
 .note{font-size:14px;margin-top:6px;white-space:pre-wrap;color:light-dark(#5b524b,#cfc6bb)}
 li{margin-bottom:6px}
 .foot{font-size:13px;color:var(--mute);border-top:1px dashed var(--line);margin-top:30px;padding-top:14px}
@@ -102,7 +106,7 @@ li{margin-bottom:6px}
 .prog{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:8px}
 .prog i{display:block;height:100%;background:var(--c);border-radius:8px}
 .sec{margin-top:26px}
-.sec h2{display:flex;align-items:baseline;gap:10px}
+.sec h2{display:flex;align-items:baseline;gap:0 10px;flex-wrap:wrap}
 .sec h2 .hand{font-size:22px}
 .cl{background:var(--paper);border-radius:14px;box-shadow:0 1px 0 var(--line),0 8px 20px -16px rgba(60,40,30,.5);overflow:hidden}
 .ci{display:grid;grid-template-columns:minmax(0,1fr) 64px 64px;gap:8px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
@@ -148,6 +152,39 @@ const uid=()=>Math.random().toString(36).slice(2,9);
 /* ---------- 기본 데이터 (좌표: 고덕지도 GCJ-02, 근사치) ---------- */
 const HOTEL={name:'호텔 (메트로폴로 진장 클래시크)',zh:'锦江都城南京饭店 山西南路200号',lng:121.4812,lat:31.2378};
 const PVG={name:'푸동공항 T1',zh:'浦东国际机场T1航站楼',lng:121.8078,lat:31.1487};
+const FOOD=[
+ {name:'지아지아탕바오',zh:'佳家汤包(黄河路店) 黄河路127号',lng:121.4712,lat:31.2372,type:'food',menu:'돼지고기 샤오롱바오, 게살+돼지 샤오롱바오(반반 주문 가능)',price:'1인 ¥30~60',note:'인민광장역 8번 출구 근처 · 줄이 빨리 빠져요 · 다 팔리면 일찍 닫아요'},
+ {name:'남상만두점 (예원)',zh:'南翔馒头店 豫园路85号',lng:121.4907,lat:31.2279,type:'food',menu:'게살 샤오롱바오(蟹粉小笼), 기본 돼지고기 샤오롱바오',price:'1층 포장 저렴 · 3층 식사 1인 약 ¥80',note:'미쉐린 빕구르망 · 층이 올라갈수록 비싸고 줄은 짧아요'},
+ {name:'라이라이샤오롱',zh:'莱莱小笼',lng:null,lat:null,type:'food',menu:'게살 샤오롱바오 8개',price:'8개 ¥40 정도',note:'게살 샤오롱 가성비 맛집 · 위치는 고덕에서 검색 후 핀 찍기'},
+ {name:'샤오양생지엔 (생전바오)',zh:'小杨生煎',lng:null,lat:null,type:'food',menu:'생지엔바오(바닥 바삭한 군만두, 육즙 많음)',price:'1인 ¥20~34',note:'체인이라 난징동루 근처 지점 많아요 · 고덕에서 가까운 지점 검색'},
+ {name:'라오지스 (우캉맨션 근처)',zh:'老吉士酒家 天平路41号',lng:121.4400,lat:31.2050,type:'food',menu:'홍샤오로우(간장 돼지고기 조림), 총요우반미엔 ¥38, 간장볶음밥 ¥58',price:'1인 ¥150~200 예상',note:'웨이팅 1시간은 기본 · 자리가 좁아요'},
+ {name:'파기름 국수 (징안사)',zh:'沪西老弄堂面馆(静安寺店) 北京西路1738号',lng:121.4470,lat:31.2275,type:'food',menu:'총요우반미엔(葱油拌面 파기름 비빔면)',price:'국수 ¥20~45',note:'영어 메뉴판 있음 · 징안사역 1번 출구 도보 6분'},
+ {name:'홀리랜드 수건케이크 (루자쭈이)',zh:'好利来(正大广场店)',lng:121.5010,lat:31.2385,type:'cafe',menu:'수건케이크(毛巾卷), 치즈케이크',price:'수건케이크 ¥32 · 치즈케이크 ¥40~45',note:'10:00~22:00 · 티엔즈팡 지점도 있어요: 好利来(打浦桥日月光店)'}];
+const GIFTS=[
+ ['마트 (까르푸 · 허마 · 알디)','알리페이로 결제 · 장바구니 들고 가기',[
+  ['화이트래빗 토끼사탕','大白兔奶糖','1봉 ¥15~20','까르푸·편의점·난징동루 전문매장 · 말차·팥 맛도 있어요'],
+  ['차차 해바라기씨','洽洽瓜子','','회사·친구 나눠주기 좋은 간식'],
+  ['레이즈 한정맛 감자칩','乐事','','오이맛 같은 중국 한정맛'],
+  ['하이디라오 훠궈 소스','海底捞火锅底料','','액체·소스류는 위탁수하물로'],
+  ['RIO 칵테일','RIO鸡尾酒','','호텔에서 마시기 좋은 파스텔 병 칵테일'],
+  ['밀크티 티백','奶茶','','가볍고 부피 작아 선물용']]],
+ ['디저트 (포장해 오기)','생크림류는 마지막 날 사기',[
+  ['수건케이크','好利来 毛巾卷','¥32','홀리랜드 정대광장점·티엔즈팡점 · 냉장 보관, 귀국날 구입'],
+  ['루시허 솔트 슈크림','泸溪河','1팩 ¥33 · 작은 저당 ¥16.9','버터떡도 유명 · 배달도 가능'],
+  ['피스호텔 버터플라이 파이','和平饭店 蝴蝶酥','','와이탄 피스호텔 · 상하이 대표 과자 선물'],
+  ['가든호텔 버터쿠키','花园饭店 曲奇','',''],
+  ['탕베이커리 단황쑤','唐饼家 蛋黄酥','','징안사역 근처 · 아침부터 줄 서요']]],
+ ['소품 · 뷰티','',[
+  ['상하이 여인크림','上海女人 雪花膏','¥20 이하','치파오 여인 틴케이스 · 향 여러 종류'],
+  ['페이위에 스니커즈','飞跃','','한국보다 훨씬 저렴 · 커플템'],
+  ['팝마트 블라인드박스','泡泡玛特 POP MART','','쇼핑몰마다 매장 있어요'],
+  ['차 (체인점에서)','天福茗茶 · 八马茶业','','관광지 찻집보다 체인점이 품질·가격 안전'],
+  ['실크 스카프 · 마그넷','丝巾 · 冰箱贴','','예원상성에서 구경하며 사기']]],
+ ['디즈니 (1/4)','파크 안 한정 굿즈가 많아요',[
+  ['디즈니 머리띠','','','사서 바로 하고 놀기'],
+  ['상하이 한정 키링·마그넷','','','중국풍 의상 캐릭터 디자인'],
+  ['상하이 레터링 머그·텀블러','','','']]]];
+function seedGifts(){const out=[];GIFTS.forEach(([sec,hint,items])=>items.forEach(([t,zh,p,d])=>out.push({id:uid(),sec,t,zh:zh||'',p:p||'',d:d||'',a:false,b:false})));return out}
 const PRESETS=[
  ['와이탄 (외탄)','外滩',121.4905,31.2400],['예원','豫园',121.4920,31.2272],['난징동루 보행가','南京东路步行街',121.4800,31.2385],
  ['동방명주','东方明珠',121.4997,31.2397],['상하이 타워','上海中心大厦',121.5055,31.2335],['신천지','新天地',121.4750,31.2195],
@@ -215,6 +252,7 @@ let S;try{S=JSON.parse($('#state').textContent)}catch(e){}
 try{const L=JSON.parse(localStorage.getItem('sh-trip')||'null');if(L&&(!S||(L.saved||0)>(S.saved||0)))S=L}catch(e){}
 if(!S||!S.days)S=JSON.parse(JSON.stringify(DEFAULT));
 if(!S.checks)S.checks=seedChecks();
+if(!S.gifts)S.gifts=seedGifts();
 S.days.forEach(d=>{const D=DEFAULT.days.find(x=>x.id===d.id);if(D)d.color=D.color});
 let cur=(()=>{try{return +sessionStorage.getItem('sh-cur')||0}catch(e){return 0}})(),view=null,pinFor=null,pendingPin=null,undoStack=[];
 
@@ -259,7 +297,7 @@ const amapNav=(a,b,mode)=>`https://uri.amap.com/navigation?from=${a.lng},${a.lat
 const appleNav=(b,mode)=>{const[x,y]=gcj2wgs(b.lng,b.lat);return`https://maps.apple.com/?daddr=${y.toFixed(6)},${x.toFixed(6)}&q=${enc(b.name)}&dirflg=${mode==='walk'?'w':mode==='bus'?'r':'d'}`};
 
 /* ---------- 렌더 ---------- */
-const page=()=>location.hash==='#checklist'?'check':'plan';
+const page=()=>location.hash==='#checklist'?'check':location.hash==='#souvenir'?'gift':'plan';
 function heroSVG(){
  // 와이탄 석조 건물 줄 (x, 폭, 높이, 지붕: d=돔, c=시계탑, p=박공, f=평지붕)
  const B=[[0,150,250,'p'],[150,120,215,'f'],[270,110,270,'d'],[380,95,235,'f'],[475,70,300,'c'],[545,130,225,'p'],[675,90,195,'f'],[765,85,175,'d']];
@@ -284,15 +322,15 @@ function heroSVG(){
  <g mask="url(#m)"><g filter="url(#bl)" transform="translate(0 660) scale(1 -1)">${city}</g></g>
  <g stroke="var(--ink)" stroke-width="3" opacity=".7"><line x1="905" y1="330" x2="905" y2="200"/><line x1="905" y1="200" x2="940" y2="196"/></g><circle cx="944" cy="197" r="5" fill="var(--win)" class="lit"/>
  <rect y="329" width="1200" height="2" fill="var(--win)" opacity=".35"/></svg>`}
-function header(){const P=page()==='plan';return`<div class="hero">${heroSVG()}
-  <nav class="nav" aria-label="페이지"><a href="#plan" ${P?'aria-current="page"':''}>동선표</a><a href="#checklist" ${!P?'aria-current="page"':''}>준비 체크리스트</a></nav>
+function header(){const pg=page(),P=pg==='plan';const T={plan:['Shanghai, in January','상해 2박 3일, 하루씩 한 줄로'],check:['Before we leave','떠나기 전에 한국에서 끝낼 것들'],gift:['Little things to bring home','기념품 · 쇼핑 리스트']}[pg];return`<div class="hero">${heroSVG()}
+  <nav class="nav" aria-label="페이지"><a href="#plan" ${P?'aria-current="page"':''}>동선표</a><a href="#checklist" ${pg==='check'?'aria-current="page"':''}>체크리스트</a><a href="#souvenir" ${pg==='gift'?'aria-current="page"':''}>기념품</a></nav>
 </div>
-  <div class="cap"><small>야콩 &amp; 쑴니 · 2027. 1. 3 — 1. 5</small><span class="en">${P?'Shanghai, in January':'Before we leave'}</span></div>
+  <div class="cap"><small>야콩 &amp; 쑴니 · 2027. 1. 3 — 1. 5</small><span class="en">${T[0]}</span></div>
   <header class="band" style="padding-bottom:0">
-  <h1>${P?'상해 2박 3일, 하루씩 한 줄로':'떠나기 전에 한국에서 끝낼 것들'}</h1>
+  <h1>${T[1]}</h1>
   <p class="sub">메트로폴로 진장 호텔 클래시크 (난징동루) <span class="zh">山西南路200号</span> · <span style="white-space:nowrap">☎ +86-21-63222888</span></p>
  </header>`}
-function render(){if(page()==='check'){renderCheck();return}
+function render(){if(page()==='check'){renderCheck();return}if(page()==='gift'){renderGift();return}
  const day=S.days[cur];document.documentElement.style.setProperty('--c',day.color);const P=plan(day);
  $('#app').innerHTML=header()+`
  <section class="band" style="padding-top:0;padding-bottom:0">
@@ -347,6 +385,24 @@ function renderCheck(){document.documentElement.style.setProperty('--c','#a9533c
  </main>`;
  $('#addck').onsubmit=e=>{e.preventDefault();const t=$('#ck-t').value.trim();if(!t)return;S.checks.push({id:uid(),sec:$('#ck-sec').value,t,d:'',a:false,b:false,custom:true});changed();renderCheck()};syncLabel()}
 
+function renderGift(){document.documentElement.style.setProperty('--c','#a9533c');const G=S.gifts;const secs=[...new Set(G.map(g=>g.sec))];const hint=Object.fromEntries(GIFTS.map(x=>[x[0],x[1]]));
+ const na=G.filter(g=>g.a).length,nb=G.filter(g=>g.b).length;
+ $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+  <p class="sub" style="margin-bottom:10px">샀으면 각자 칸에 체크해요 · 필요 없는 건 지우고, 사고 싶은 건 아래에서 추가</p>
+  <div class="sum"><span>야콩 <b>${na}</b>개 샀음</span><span>쑴니 <b>${nb}</b>개 샀음</span><span class="sync" id="sync"></span></div>
+  ${secs.map(sec=>`<section class="sec"><h2>${esc(sec)} ${hint[sec]?`<span class="hand">${esc(hint[sec])}</span>`:''}</h2>
+   <div class="cl"><div class="ci head"><span>살 것</span><span>야콩</span><span>쑴니</span></div>
+   ${G.filter(g=>g.sec===sec).map(g=>`<div class="ci ${g.a&&g.b?'done':''}"><div><div class="t">${esc(g.t)} ${g.zh?`<span class="zh" style="font-weight:400;color:var(--mute);font-size:14px">${esc(g.zh)}</span>`:''}</div>
+    <div class="d">${g.p?`<b style="color:var(--gold);font-weight:500">${esc(g.p)}</b>${g.d?' · ':''}`:''}${esc(g.d)}</div>
+    <div style="display:flex;gap:12px">${g.zh?`<button class="x" data-copy="${esc(g.zh)}">중국어 복사</button>`:''}<button class="x" data-delgift="${esc(g.id)}">삭제</button></div></div>
+    <button class="ck" data-gift="${esc(g.id)}" data-who="a" aria-pressed="${g.a}" aria-label="야콩 ${esc(g.t)}">${g.a?'✓':''}</button>
+    <button class="ck k2" data-gift="${esc(g.id)}" data-who="b" aria-pressed="${g.b}" aria-label="쑴니 ${esc(g.t)}">${g.b?'✓':''}</button></div>`).join('')}</div></section>`).join('')}
+  <section class="sec"><h2>사고 싶은 것 추가</h2>
+   <form class="addrow" id="addgift"><select id="gf-sec" class="btn" aria-label="분류">${secs.map(s=>`<option>${esc(s)}</option>`).join('')}</select><input id="gf-t" placeholder="예: 디즈니 주토피아 인형" aria-label="물건 이름"><input id="gf-p" placeholder="가격 (선택)" aria-label="가격" style="max-width:150px"><button class="btn pri">추가</button></form></section>
+  <p class="foot">가격은 2025~2026년 후기 기준이라 달라질 수 있어요. 소스·크림·술 같은 액체류는 기내 반입이 제한되니 위탁수하물에 넣으세요. 「중국어 복사」를 눌러 점원에게 보여주면 찾기 쉬워요.</p>
+ </main>`;
+ $('#addgift').onsubmit=e=>{e.preventDefault();const t=$('#gf-t').value.trim();if(!t)return;S.gifts.push({id:uid(),sec:$('#gf-sec').value,t,zh:'',p:$('#gf-p').value.trim(),d:'',a:false,b:false});changed();renderGift()};syncLabel()}
+
 function rowHTML(day,r,i,n){const s=r.s,isA=!!r.anchor,leg=r.tr?`<li class="leg">${r.tr.mode==='?'?'위치 미정 구간 (20분 가정)':r.tr.mode==='same'?'같은 장소':`${r.tr.label} 약 ${r.tr.min}분 · ${fkm(r.d)}`}
   ${r.tr.mode!=='?'&&r.tr.mode!=='same'&&r.from.lng!=null&&s.lng!=null?` · <a href="${esc(amapNav(r.from,s,r.tr.mode==='walk'?'walk':'car'))}">고덕 길찾기</a> · <a href="${esc(amapNav(r.from,s,'bus'))}">대중교통</a> · <a href="${esc(appleNav(s,r.tr.mode))}">Apple 지도</a>`:''}</li>`:'';
  let warn='';
@@ -356,8 +412,9 @@ function rowHTML(day,r,i,n){const s=r.s,isA=!!r.anchor,leg=r.tr?`<li class="leg"
  const tm=r.anchor==='start'?`${toT(r.beg)}<small>${s.stay?'~'+toT(r.leave):'출발'}</small>`:r.anchor==='end'?`${toT(r.arr)}<small>도착</small>`:`${toT(r.beg)}<small>~${toT(r.leave)}</small>`;
  const editKey=r.anchor?r.anchor:s.id;
  return`${leg}<li class="stop"><div class="time">${tm}</div><div class="card ${isA?'anchor':''} ${s.lng==null?'nopin':''}">
-  <div class="ttl"><span class="num">${num}</span>${esc(s.name)}${s.lock?'<span class="lock">순서 고정</span>':''}${s.want&&!isA?`<span class="lock">희망 ${esc(s.want)}</span>`:''}</div>
+  <div class="ttl"><span class="num">${num}</span>${esc(s.name)}${s.type==='food'?'<span class="chip">식당</span>':s.type==='cafe'?'<span class="chip">카페·디저트</span>':''}${s.lock?'<span class="lock">순서 고정</span>':''}${s.want&&!isA?`<span class="lock">희망 ${esc(s.want)}</span>`:''}</div>
   <div class="meta">${s.zh?`<span class="zh">${esc(s.zh)}</span> · `:''}${isA?(r.anchor==='start'?(s.stay?`${s.stay}분 머무름`:''):''):`${s.stay}분 머무름`}${s.lng==null?' · <b>위치 미지정</b>':''}${r.beg>r.arr+1&&!isA?` · ${Math.round(r.beg-r.arr)}분 대기`:''}</div>
+  ${s.menu||s.price?`<div class="menu"><span>추천 메뉴</span> ${esc(s.menu||'-')}${s.price?`<b>${esc(s.price)}</b>`:''}</div>`:''}
   ${s.note?`<div class="note">${esc(s.note)}</div>`:''}${warn}
   <div class="acts"><a class="amap" href="${esc(amapPin(s))}">고덕지도</a>${s.zh?`<button data-copy="${esc(s.zh)}">중국어 복사</button>`:''}<button data-edit="${esc(editKey)}">✎ 편집</button>${!isA?`<button data-up="${esc(s.id)}" aria-label="위로">↑</button><button data-down="${esc(s.id)}" aria-label="아래로">↓</button>`:''}<button data-pin="${esc(editKey)}">핀 찍기</button></div>
  </div></li>`}
@@ -408,7 +465,9 @@ function openEdit(key){const d=S.days[cur];const isNew=key==='__new';const s=isN
  if(isNew&&pendingPin){s.lng=pendingPin[0];s.lat=pendingPin[1];pendingPin=null}draft=isNew?s:null;
  const isA=key==='start'||key==='end';
  $('#sheet').innerHTML=`<h2>${isNew?'장소 추가':'편집'} · ${esc(d.label)}</h2>
- ${isNew?`<label for="f-pre">자주 가는 곳에서 고르기</label><select id="f-pre"><option value="">직접 입력</option>${PRESETS.map((p,i)=>`<option value="${i}">${esc(p[0])} ${esc(p[1])}</option>`).join('')}</select>`:''}
+ ${isNew?`<label for="f-pre">추천 목록에서 고르기</label><select id="f-pre"><option value="">직접 입력</option><optgroup label="맛집 · 디저트 (추천 메뉴·가격 포함)">${FOOD.map((p,i)=>`<option value="f${i}">${esc(p.name)}</option>`).join('')}</optgroup><optgroup label="명소">${PRESETS.map((p,i)=>`<option value="${i}">${esc(p[0])} ${esc(p[1])}</option>`).join('')}</optgroup></select>`:''}
+ ${key!=='start'&&key!=='end'?`<label for="f-type">종류</label><select id="f-type"><option value="">장소 · 체험</option><option value="food" ${s.type==='food'?'selected':''}>식당</option><option value="cafe" ${s.type==='cafe'?'selected':''}>카페 · 디저트</option><option value="shop" ${s.type==='shop'?'selected':''}>쇼핑</option></select>
+ <div id="f-foodbox" ${s.type==='food'||s.type==='cafe'?'':'hidden'}><label for="f-menu">추천 메뉴</label><input id="f-menu" value="${esc(s.menu||'')}" placeholder="예: 게살 샤오롱바오"><label for="f-price">가격대</label><input id="f-price" value="${esc(s.price||'')}" placeholder="예: 1인 ¥50~80"><p class="sub" style="font-size:13px;margin-top:6px">모르는 식당이면 비워두고 Claude에게 「○○ 추천 메뉴랑 가격 채워줘」라고 물어보세요.</p></div>`:''}
  <label for="f-name">이름</label><input id="f-name" value="${esc(s.name)}" placeholder="예: 우캉맨션">
  <label for="f-zh">중국어 이름·주소 (택시 기사님께 보여줄 글)</label><input id="f-zh" value="${esc(s.zh||'')}" placeholder="例: 武康大楼">
  <label for="f-ll">좌표 (경도,위도 — 고덕지도 기준)</label><input id="f-ll" inputmode="decimal" value="${s.lng!=null?esc(s.lng+','+s.lat):''}" placeholder="121.4375,31.2045 — 비워두면 위치 미지정">
@@ -422,9 +481,12 @@ function openEdit(key){const d=S.days[cur];const isNew=key==='__new';const s=isN
  ${!isNew&&!isA?`<label for="f-day">다른 날로 옮기기</label><select id="f-day">${S.days.map((dd,i)=>`<option value="${i}" ${i===cur?'selected':''}>${esc(dd.label)}</option>`).join('')}</select>`:''}
  <div class="bar" style="margin-top:16px"><button class="btn pri" data-act="savestop" data-key="${esc(key)}">저장</button><button class="btn" data-act="close">취소</button>${!isNew&&!isA?`<button class="btn" data-act="del" data-key="${esc(key)}" style="margin-left:auto">삭제</button>`:''}</div>`;
  $('#modal').classList.add('on');$('#modal')._key=key;
- const pre=$('#f-pre');if(pre)pre.onchange=()=>{const p=PRESETS[pre.value];if(!p)return;$('#f-name').value=p[0];$('#f-zh').value=p[1];$('#f-ll').value=p[2]+','+p[3]};
+ const ft=$('#f-type');if(ft)ft.onchange=()=>{$('#f-foodbox').hidden=!(ft.value==='food'||ft.value==='cafe')};
+ const pre=$('#f-pre');if(pre)pre.onchange=()=>{const v=pre.value;if(!v)return;
+  if(v[0]==='f'){const f=FOOD[+v.slice(1)];$('#f-name').value=f.name;$('#f-zh').value=f.zh;$('#f-ll').value=f.lng!=null?f.lng+','+f.lat:'';ft.value=f.type;$('#f-foodbox').hidden=false;$('#f-menu').value=f.menu;$('#f-price').value=f.price;$('#f-note').value=f.note;$('#f-stay').value=f.type==='cafe'?20:60;return}
+  const p=PRESETS[v];$('#f-name').value=p[0];$('#f-zh').value=p[1];$('#f-ll').value=p[2]+','+p[3]};
  setTimeout(()=>$('#f-name')?.focus(),50)}
-function readForm(s){s.name=$('#f-name').value.trim()||'이름 없는 장소';s.zh=$('#f-zh').value.trim();
+function readForm(s){if($('#f-type')){s.type=$('#f-type').value;s.menu=$('#f-menu').value.trim();s.price=$('#f-price').value.trim()}s.name=$('#f-name').value.trim()||'이름 없는 장소';s.zh=$('#f-zh').value.trim();
  const ll=$('#f-ll').value.split(/[,\s]+/).map(Number).filter(n=>!isNaN(n)&&n!==0);
  if(ll.length===2){let[a,b]=ll;if(a<b)[a,b]=[b,a];s.lng=a;s.lat=b}else{s.lng=null;s.lat=null}
  const v=id=>$(id)?.value;if($('#f-time'))s.time=v('#f-time');if($('#f-stay'))s.stay=Math.max(0,+v('#f-stay')||0);if($('#f-want'))s.want=v('#f-want')||'';if($('#f-dl'))s.deadline=v('#f-dl')||'';if($('#f-lock'))s.lock=$('#f-lock').checked;s.note=v('#f-note')}
@@ -455,6 +517,8 @@ async function copy(txt,msg){try{await navigator.clipboard.writeText(txt);toast(
 /* ---------- 이벤트 ---------- */
 document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab]');if(!t)return;const day=S.days[cur];const st=day.stops;
  if(t.dataset.ck){const c=S.checks.find(x=>x.id===t.dataset.ck);if(c){c[t.dataset.who]=!c[t.dataset.who];changed();renderCheck()}return}
+ if(t.dataset.gift){const g=S.gifts.find(x=>x.id===t.dataset.gift);if(g){g[t.dataset.who]=!g[t.dataset.who];changed();renderGift()}return}
+ if(t.dataset.delgift){S.gifts=S.gifts.filter(x=>x.id!==t.dataset.delgift);changed();renderGift();return}
  if(t.dataset.delck){S.checks=S.checks.filter(x=>x.id!==t.dataset.delck);changed();renderCheck();return}
  if(t.dataset.tab!=null){cur=+t.dataset.tab;try{sessionStorage.setItem('sh-cur',cur)}catch(e){}view=null;pinFor=null;render();return}
  if(t.dataset.z!=null){const z=+t.dataset.z;if(z===0)view=null;else view.span/=z;drawMap(day,plan(day));return}
