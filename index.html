@@ -96,6 +96,14 @@ ol.tl{list-style:none;margin:0;padding:0}
 .menu{font-size:14px;margin-top:8px;padding:8px 10px;background:var(--soft);border-radius:8px}
 .menu span{color:var(--mute);margin-right:4px}
 .menu b{display:inline-block;margin-left:8px;color:var(--gold);font-weight:500;white-space:nowrap}
+.eat{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:14px}
+.ecard{display:flex;flex-direction:column}.ecard .acts{margin-top:auto;padding-top:10px}
+.addday{font-weight:500}.addday.on{background:var(--c)!important;border-color:var(--c)!important;color:#fff!important}
+.steps{margin:6px 0 14px;padding-left:20px;font-size:15px}.steps li{margin-bottom:6px}
+.addr{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--soft);border-radius:10px;padding:12px 14px}
+.addr small{color:var(--mute);font-size:13px}.addr .zh{font-size:16px;margin:2px 0}
+.ck.heart{font-size:22px;color:var(--mute)}.ck.heart[aria-pressed=true]{color:#fff}
+.nav{overflow-x:auto;scrollbar-width:none;max-width:calc(100% - 32px)}.nav a{flex:none}
 .note{font-size:14px;margin-top:6px;white-space:pre-wrap;color:light-dark(#5b524b,#cfc6bb)}
 li{margin-bottom:6px}
 .foot{font-size:13px;color:var(--mute);border-top:1px dashed var(--line);margin-top:30px;padding-top:14px}
@@ -153,13 +161,33 @@ const uid=()=>Math.random().toString(36).slice(2,9);
 const HOTEL={name:'호텔 (메트로폴로 진장 클래시크)',zh:'锦江都城南京饭店 山西南路200号',lng:121.4812,lat:31.2378};
 const PVG={name:'푸동공항 T1',zh:'浦东国际机场T1航站楼',lng:121.8078,lat:31.1487};
 const FOOD=[
- {name:'지아지아탕바오',zh:'佳家汤包(黄河路店) 黄河路127号',lng:121.4712,lat:31.2372,type:'food',menu:'돼지고기 샤오롱바오, 게살+돼지 샤오롱바오(반반 주문 가능)',price:'1인 ¥30~60',note:'인민광장역 8번 출구 근처 · 줄이 빨리 빠져요 · 다 팔리면 일찍 닫아요'},
- {name:'남상만두점 (예원)',zh:'南翔馒头店 豫园路85号',lng:121.4907,lat:31.2279,type:'food',menu:'게살 샤오롱바오(蟹粉小笼), 기본 돼지고기 샤오롱바오',price:'1층 포장 저렴 · 3층 식사 1인 약 ¥80',note:'미쉐린 빕구르망 · 층이 올라갈수록 비싸고 줄은 짧아요'},
- {name:'라이라이샤오롱',zh:'莱莱小笼',lng:null,lat:null,type:'food',menu:'게살 샤오롱바오 8개',price:'8개 ¥40 정도',note:'게살 샤오롱 가성비 맛집 · 위치는 고덕에서 검색 후 핀 찍기'},
- {name:'샤오양생지엔 (생전바오)',zh:'小杨生煎',lng:null,lat:null,type:'food',menu:'생지엔바오(바닥 바삭한 군만두, 육즙 많음)',price:'1인 ¥20~34',note:'체인이라 난징동루 근처 지점 많아요 · 고덕에서 가까운 지점 검색'},
- {name:'라오지스 (우캉맨션 근처)',zh:'老吉士酒家 天平路41号',lng:121.4400,lat:31.2050,type:'food',menu:'홍샤오로우(간장 돼지고기 조림), 총요우반미엔 ¥38, 간장볶음밥 ¥58',price:'1인 ¥150~200 예상',note:'웨이팅 1시간은 기본 · 자리가 좁아요'},
- {name:'파기름 국수 (징안사)',zh:'沪西老弄堂面馆(静安寺店) 北京西路1738号',lng:121.4470,lat:31.2275,type:'food',menu:'총요우반미엔(葱油拌面 파기름 비빔면)',price:'국수 ¥20~45',note:'영어 메뉴판 있음 · 징안사역 1번 출구 도보 6분'},
- {name:'홀리랜드 수건케이크 (루자쭈이)',zh:'好利来(正大广场店)',lng:121.5010,lat:31.2385,type:'cafe',menu:'수건케이크(毛巾卷), 치즈케이크',price:'수건케이크 ¥32 · 치즈케이크 ¥40~45',note:'10:00~22:00 · 티엔즈팡 지점도 있어요: 好利来(打浦桥日月光店)'}];
+ {name:'지아지아탕바오',area:'인민광장',zh:'佳家汤包(黄河路店) 黄河路127号',lng:121.4712,lat:31.2372,type:'food',menu:'돼지고기 샤오롱바오, 게살+돼지 샤오롱바오(반반 주문 가능)',price:'1인 ¥30~60',note:'인민광장역 8번 출구 근처 · 줄이 빨리 빠져요 · 다 팔리면 일찍 닫아요'},
+ {name:'남상만두점 (예원)',area:'예원',zh:'南翔馒头店 豫园路85号',lng:121.4907,lat:31.2279,type:'food',menu:'게살 샤오롱바오(蟹粉小笼), 기본 돼지고기 샤오롱바오',price:'1층 포장 저렴 · 3층 식사 1인 약 ¥80',note:'미쉐린 빕구르망 · 층이 올라갈수록 비싸고 줄은 짧아요'},
+ {name:'라이라이샤오롱',area:'시내',zh:'莱莱小笼',lng:null,lat:null,type:'food',menu:'게살 샤오롱바오 8개',price:'8개 ¥40 정도',note:'게살 샤오롱 가성비 맛집 · 위치는 고덕에서 검색 후 핀 찍기'},
+ {name:'샤오양생지엔 (생전바오)',area:'난징동루 등 체인',zh:'小杨生煎',lng:null,lat:null,type:'food',menu:'생지엔바오(바닥 바삭한 군만두, 육즙 많음)',price:'1인 ¥20~34',note:'체인이라 난징동루 근처 지점 많아요 · 고덕에서 가까운 지점 검색'},
+ {name:'라오지스 (우캉맨션 근처)',area:'우캉맨션',zh:'老吉士酒家 天平路41号',lng:121.4400,lat:31.2050,type:'food',menu:'홍샤오로우(간장 돼지고기 조림), 총요우반미엔 ¥38, 간장볶음밥 ¥58',price:'1인 ¥150~200 예상',note:'웨이팅 1시간은 기본 · 자리가 좁아요'},
+ {name:'파기름 국수 (징안사)',area:'징안사',zh:'沪西老弄堂面馆(静安寺店) 北京西路1738号',lng:121.4470,lat:31.2275,type:'food',menu:'총요우반미엔(葱油拌面 파기름 비빔면)',price:'국수 ¥20~45',note:'영어 메뉴판 있음 · 징안사역 1번 출구 도보 6분'},
+ {name:'예 상하이 (신천지)',zh:'夜上海 新天地',lng:121.4748,lat:31.2198,type:'food',area:'신천지',menu:'눈앞에서 썰어주는 오리구이 디너 세트',price:'디너 세트 1인 ¥188',note:'분위기 좋은 상하이 요리 · 저녁 예약 추천'},
+ {name:'달러샵 훠궈',zh:'Dolar Shop 豆捞坊',lng:null,lat:null,type:'food',area:'쇼핑몰 지점 여러 곳',menu:'1인 냄비 훠궈',price:'앱에서 확인',note:'깔끔한 1인 팟 · 훠궈 초보·위생 중시라면 · 가까운 지점 검색'},
+ {name:'리바이셰 게살국수 (와이탄·예원)',zh:'蟹黄面',lng:null,lat:null,type:'food',area:'와이탄 · 예원',menu:'게살국수(蟹黄面)',price:'국내 예약상품 기준 1인 약 ₩59,000~',note:'리버뷰 지점 · 한국 예약사이트로 미리 예약 가능'},
+ {name:'홀리랜드 수건케이크 (루자쭈이)',area:'루자쭈이 · 티엔즈팡',zh:'好利来(正大广场店)',lng:121.5010,lat:31.2385,type:'cafe',menu:'수건케이크(毛巾卷), 치즈케이크',price:'수건케이크 ¥32 · 치즈케이크 ¥40~45',note:'10:00~22:00 · 티엔즈팡 지점도 있어요: 好利来(打浦桥日月光店)'}];
+const DELIV=[
+ ['마라 · 매운 것','',[
+  ['마라탕','麻辣烫','杨国福麻辣烫 · 张亮麻辣烫 같은 체인이 무난해요','','麻辣烫'],
+  ['마라롱샤 (민물가재)','麻辣小龙虾','밤 야식 인기 · 껍질 까기 귀찮으면 虾尾(새우꼬리)만','','麻辣小龙虾'],
+  ['마오차이','冒菜','마라탕 좋아하면 꼭 · 마라탕보다 진하고 얼얼해요','','冒菜']]],
+ ['상하이 · 중국 음식','',[
+  ['생지엔바오','生煎','샤오양생지엔 배달 가능 · 식으면 바삭함이 줄어요','1인 ¥20~34','小杨生煎'],
+  ['총요우반미엔 (파기름 국수)','葱油拌面','가볍게 한 끼 · 한국인 입맛에 잘 맞아요','국수 ¥20~45','葱油拌面'],
+  ['꿔바로우','锅包肉','동북요리 가게 · 바삭한 찹쌀 탕수육','','锅包肉'],
+  ['양꼬치 · 바베큐','烧烤 · 羊肉串','호텔에서 맥주랑 야식','','烧烤']]],
+ ['디저트 · 음료','',[
+  ['헤이티 밀크티','喜茶','상하이 인기 밀크티','한 잔 약 4~5천 원','喜茶'],
+  ['루시허 솔트 슈크림','泸溪河','출국날 들고 가기 좋아요','1팩 ¥33','泸溪河'],
+  ['루이싱 커피','瑞幸咖啡','아침 커피 배달','','瑞幸']]],
+ ['편의 · 장보기','',[
+  ['허마 과일·맥주','盒马','과일 컵·맥주·간식을 호텔로','','盒马']]]];
+function seedDeliv(){const out=[];DELIV.forEach(([sec,hint,items])=>items.forEach(([t,zh,d,p,q])=>out.push({id:uid(),sec,t,zh,d,p,q,a:false,b:false})));return out}
 const GIFTS=[
  ['마트 (까르푸 · 허마 · 알디)','알리페이로 결제 · 장바구니 들고 가기',[
   ['화이트래빗 토끼사탕','大白兔奶糖','1봉 ¥15~20','까르푸·편의점·난징동루 전문매장 · 말차·팥 맛도 있어요'],
@@ -253,6 +281,7 @@ try{const L=JSON.parse(localStorage.getItem('sh-trip')||'null');if(L&&(!S||(L.sa
 if(!S||!S.days)S=JSON.parse(JSON.stringify(DEFAULT));
 if(!S.checks)S.checks=seedChecks();
 if(!S.gifts)S.gifts=seedGifts();
+if(!S.deliv)S.deliv=seedDeliv();
 S.days.forEach(d=>{const D=DEFAULT.days.find(x=>x.id===d.id);if(D)d.color=D.color});
 let cur=(()=>{try{return +sessionStorage.getItem('sh-cur')||0}catch(e){return 0}})(),view=null,pinFor=null,pendingPin=null,undoStack=[];
 
@@ -297,7 +326,7 @@ const amapNav=(a,b,mode)=>`https://uri.amap.com/navigation?from=${a.lng},${a.lat
 const appleNav=(b,mode)=>{const[x,y]=gcj2wgs(b.lng,b.lat);return`https://maps.apple.com/?daddr=${y.toFixed(6)},${x.toFixed(6)}&q=${enc(b.name)}&dirflg=${mode==='walk'?'w':mode==='bus'?'r':'d'}`};
 
 /* ---------- 렌더 ---------- */
-const page=()=>location.hash==='#checklist'?'check':location.hash==='#souvenir'?'gift':'plan';
+const page=()=>({'#checklist':'check','#souvenir':'gift','#eat':'eat','#delivery':'deliv'})[location.hash]||'plan';
 function heroSVG(){
  // 와이탄 석조 건물 줄 (x, 폭, 높이, 지붕: d=돔, c=시계탑, p=박공, f=평지붕)
  const B=[[0,150,250,'p'],[150,120,215,'f'],[270,110,270,'d'],[380,95,235,'f'],[475,70,300,'c'],[545,130,225,'p'],[675,90,195,'f'],[765,85,175,'d']];
@@ -322,15 +351,15 @@ function heroSVG(){
  <g mask="url(#m)"><g filter="url(#bl)" transform="translate(0 660) scale(1 -1)">${city}</g></g>
  <g stroke="var(--ink)" stroke-width="3" opacity=".7"><line x1="905" y1="330" x2="905" y2="200"/><line x1="905" y1="200" x2="940" y2="196"/></g><circle cx="944" cy="197" r="5" fill="var(--win)" class="lit"/>
  <rect y="329" width="1200" height="2" fill="var(--win)" opacity=".35"/></svg>`}
-function header(){const pg=page(),P=pg==='plan';const T={plan:['Shanghai, in January','상해 2박 3일, 하루씩 한 줄로'],check:['Before we leave','떠나기 전에 한국에서 끝낼 것들'],gift:['Little things to bring home','기념품 · 쇼핑 리스트']}[pg];return`<div class="hero">${heroSVG()}
-  <nav class="nav" aria-label="페이지"><a href="#plan" ${P?'aria-current="page"':''}>동선표</a><a href="#checklist" ${pg==='check'?'aria-current="page"':''}>체크리스트</a><a href="#souvenir" ${pg==='gift'?'aria-current="page"':''}>기념품</a></nav>
+function header(){const pg=page(),P=pg==='plan';const T={plan:['Shanghai, in January','상해 2박 3일, 하루씩 한 줄로'],check:['Before we leave','떠나기 전에 한국에서 끝낼 것들'],gift:['Little things to bring home','기념품 · 쇼핑 리스트'],eat:['Where Koreans eat','한국인 픽 맛집'],deliv:['Room service, Shanghai style','호텔로 배달시키기']}[pg];return`<div class="hero">${heroSVG()}
+  <nav class="nav" aria-label="페이지"><a href="#plan" ${P?'aria-current="page"':''}>동선표</a><a href="#checklist" ${pg==='check'?'aria-current="page"':''}>준비</a><a href="#eat" ${pg==='eat'?'aria-current="page"':''}>맛집</a><a href="#delivery" ${pg==='deliv'?'aria-current="page"':''}>배달</a><a href="#souvenir" ${pg==='gift'?'aria-current="page"':''}>기념품</a></nav>
 </div>
   <div class="cap"><small>야콩 &amp; 쑴니 · 2027. 1. 3 — 1. 5</small><span class="en">${T[0]}</span></div>
   <header class="band" style="padding-bottom:0">
   <h1>${T[1]}</h1>
   <p class="sub">메트로폴로 진장 호텔 클래시크 (난징동루) <span class="zh">山西南路200号</span> · <span style="white-space:nowrap">☎ +86-21-63222888</span></p>
  </header>`}
-function render(){if(page()==='check'){renderCheck();return}if(page()==='gift'){renderGift();return}
+function render(){if(page()==='check'){renderCheck();return}if(page()==='gift'){renderGift();return}if(page()==='eat'){renderEat();return}if(page()==='deliv'){renderDeliv();return}
  const day=S.days[cur];document.documentElement.style.setProperty('--c',day.color);const P=plan(day);
  $('#app').innerHTML=header()+`
  <section class="band" style="padding-top:0;padding-bottom:0">
@@ -384,6 +413,41 @@ function renderCheck(){document.documentElement.style.setProperty('--c','#a9533c
   <p class="foot">무비자 정보는 2026년 11월 26일 기준이에요. 주한중국대사관 공지를 한 번 더 확인하세요. 앱 가입 방식은 자주 바뀌니까 막히는 부분이 있으면 알리페이 안의 미니프로그램으로 대신할 수 있어요.</p>
  </main>`;
  $('#addck').onsubmit=e=>{e.preventDefault();const t=$('#ck-t').value.trim();if(!t)return;S.checks.push({id:uid(),sec:$('#ck-sec').value,t,d:'',a:false,b:false,custom:true});changed();renderCheck()};syncLabel()}
+
+function inDay(f,i){return S.days[i].stops.some(x=>x.name===f.name)}
+function renderEat(){document.documentElement.style.setProperty('--c','#a9533c');
+ $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+  <p class="sub" style="margin-bottom:14px">한국 여행자 후기에서 많이 나오는 곳을 골랐어요. 마음에 들면 날짜 버튼을 눌러 동선표에 바로 넣고, 동선표에서 「최적 동선 계산」을 누르면 돼요.</p>
+  <div class="eat">${FOOD.map((f,i)=>`<article class="card ecard"><div class="ttl">${esc(f.name)} <span class="chip">${f.type==='cafe'?'디저트':'식당'}</span></div>
+   <div class="meta"><span class="zh">${esc(f.zh)}</span>${f.area?` · ${esc(f.area)}`:''}</div>
+   <div class="menu"><span>추천 메뉴</span> ${esc(f.menu)}<b>${esc(f.price)}</b></div>
+   <div class="note">${esc(f.note)}${f.lng==null?' · 지점 위치는 추가 후 핀 찍기':''}</div>
+   <div class="acts">${S.days.map((d,j)=>`<button class="addday ${inDay(f,j)?'on':''}" data-addfood="${i}" data-day="${j}">${inDay(f,j)?'✓ ':'+ '}${esc(d.label.split(' ')[0])}</button>`).join('')}<a class="amap" href="${esc(amapPin(f))}">고덕지도</a><button data-copy="${esc(f.zh)}">중국어 복사</button></div></article>`).join('')}</div>
+  <p class="foot">가격은 2025~2026년 후기 기준이에요. 인기 식당은 웨이팅이 길어서 다중디엔핑(大众点评)에서 원격 줄서기를 하면 편해요. 목록에 없는 식당은 동선표의 「+ 장소 추가」에서 종류를 식당으로 넣고, Claude에게 추천 메뉴·가격을 채워달라고 하면 돼요.</p>
+ </main>`;syncLabel()}
+function addFood(i,j){const f=FOOD[i],d=S.days[j];if(inDay(f,j)){toast(`이미 ${d.label}에 있어요`);return}snap();
+ const st={id:uid(),name:f.name,zh:f.zh,lng:f.lng,lat:f.lat,type:f.type,menu:f.menu,price:f.price,note:f.note,stay:f.type==='cafe'?20:60};
+ const ti=d.stops.findIndex(x=>x.tail);if(ti<0)d.stops.push(st);else d.stops.splice(ti,0,st);changed();renderEat();toast(`${d.label} 동선표에 넣었어요 — 「최적 동선 계산」으로 순서 정리`)}
+const HOTEL_ZH='上海市黄浦区山西南路200号 锦江都城南京饭店（南京东路步行街店）';
+function renderDeliv(){document.documentElement.style.setProperty('--c','#a9533c');const D=S.deliv;const secs=[...new Set(D.map(x=>x.sec))];
+ $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+  <section class="card" style="padding:18px 20px"><h2 style="font-size:20px">주문하는 법</h2>
+   <ol class="steps"><li><b>알리페이 → 「饿了么」(어러머) 미니프로그램</b>이 제일 쉬워요. 메이투안은 해외 번호로는 로그인은 돼도 배달 주문이 막힐 수 있어요.</li>
+   <li>받는 주소에 아래 <b>호텔 주소</b>를 붙여넣고, 연락처는 본인 번호(+82)를 넣어요. 어려우면 호텔 프런트에 주소 입력을 부탁해도 돼요.</li>
+   <li>배달은 보통 로비의 배달 선반이나 로봇에 두고 가요. 앱 지도에서 라이더 위치를 확인하고 로비로 내려가요.</li>
+   <li>배달비는 보통 ¥3~10이에요. 가게 이름을 아래 「검색어 복사」로 붙여넣으면 찾기 쉬워요.</li></ol>
+   <div class="addr"><div><small>호텔 주소 (받는 곳)</small><div class="zh">${esc(HOTEL_ZH)}</div><small>호텔 전화 +86-21-63222888</small></div><button class="btn pri" data-copy="${esc(HOTEL_ZH)}">주소 복사</button></div></section>
+  <div class="sum" style="margin-top:18px"><span>먹고 싶은 것에 하트 · 야콩 <b>${D.filter(x=>x.a).length}</b> · 쑴니 <b>${D.filter(x=>x.b).length}</b></span><span class="sync" id="sync"></span></div>
+  ${secs.map(sec=>`<section class="sec"><h2>${esc(sec)}</h2><div class="cl"><div class="ci head"><span>메뉴</span><span>야콩</span><span>쑴니</span></div>
+   ${D.filter(x=>x.sec===sec).map(x=>`<div class="ci"><div><div class="t">${esc(x.t)} <span class="zh" style="font-weight:400;color:var(--mute);font-size:14px">${esc(x.zh)}</span></div>
+    <div class="d">${x.p?`<b style="color:var(--gold);font-weight:500">${esc(x.p)}</b> · `:''}${esc(x.d)}</div>
+    <div style="display:flex;gap:12px">${x.q?`<button class="x" data-copy="${esc(x.q)}">검색어 복사</button>`:''}${x.custom?`<button class="x" data-deldel="${esc(x.id)}">삭제</button>`:''}</div></div>
+    <button class="ck heart" data-dl="${esc(x.id)}" data-who="a" aria-pressed="${x.a}" aria-label="야콩 ${esc(x.t)}">${x.a?'♥':'♡'}</button>
+    <button class="ck k2 heart" data-dl="${esc(x.id)}" data-who="b" aria-pressed="${x.b}" aria-label="쑴니 ${esc(x.t)}">${x.b?'♥':'♡'}</button></div>`).join('')}</div></section>`).join('')}
+  <section class="sec"><h2>먹고 싶은 메뉴 추가</h2><form class="addrow" id="adddl"><input id="dl-t" placeholder="예: 하이디라오 훠궈" aria-label="메뉴"><input id="dl-q" placeholder="중국어 검색어 (선택)" aria-label="검색어" style="max-width:200px"><button class="btn pri">추가</button></form></section>
+  <p class="foot">가격이 비어 있는 메뉴는 가게마다 달라서 앱에서 확인하세요. 앱 가입·결제 방식은 자주 바뀌니 막히면 알리페이 안의 미니프로그램으로 시도해 보세요.</p>
+ </main>`;
+ $('#adddl').onsubmit=e=>{e.preventDefault();const t=$('#dl-t').value.trim();if(!t)return;S.deliv.push({id:uid(),sec:'우리가 추가한 것',t,zh:'',d:'',p:'',q:$('#dl-q').value.trim(),a:false,b:false,custom:true});changed();renderDeliv()};syncLabel()}
 
 function renderGift(){document.documentElement.style.setProperty('--c','#a9533c');const G=S.gifts;const secs=[...new Set(G.map(g=>g.sec))];const hint=Object.fromEntries(GIFTS.map(x=>[x[0],x[1]]));
  const na=G.filter(g=>g.a).length,nb=G.filter(g=>g.b).length;
@@ -517,6 +581,9 @@ async function copy(txt,msg){try{await navigator.clipboard.writeText(txt);toast(
 /* ---------- 이벤트 ---------- */
 document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab]');if(!t)return;const day=S.days[cur];const st=day.stops;
  if(t.dataset.ck){const c=S.checks.find(x=>x.id===t.dataset.ck);if(c){c[t.dataset.who]=!c[t.dataset.who];changed();renderCheck()}return}
+ if(t.dataset.addfood!=null){addFood(+t.dataset.addfood,+t.dataset.day);return}
+ if(t.dataset.dl){const x=S.deliv.find(y=>y.id===t.dataset.dl);if(x){x[t.dataset.who]=!x[t.dataset.who];changed();renderDeliv()}return}
+ if(t.dataset.deldel){S.deliv=S.deliv.filter(y=>y.id!==t.dataset.deldel);changed();renderDeliv();return}
  if(t.dataset.gift){const g=S.gifts.find(x=>x.id===t.dataset.gift);if(g){g[t.dataset.who]=!g[t.dataset.who];changed();renderGift()}return}
  if(t.dataset.delgift){S.gifts=S.gifts.filter(x=>x.id!==t.dataset.delgift);changed();renderGift();return}
  if(t.dataset.delck){S.checks=S.checks.filter(x=>x.id!==t.dataset.delck);changed();renderCheck();return}
