@@ -8,17 +8,51 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+SC:wght@600&display=swap" rel="stylesheet">
 <style>
+html{scroll-behavior:smooth;scroll-padding-top:58px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.cover{position:relative;height:100svh;min-height:520px;overflow:hidden;background:var(--sky1)}
+.hero .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;opacity:0;transition:opacity .8s}
+.hero .photo.on{opacity:1}
+.cover::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(10,9,8,.55) 0%,rgba(10,9,8,.1) 35%,rgba(10,9,8,.15) 65%,var(--bg) 100%)}
+.covertext,.scrollcue,.credit{z-index:2}
+.credit{position:absolute;right:14px;bottom:12px;font-size:11px;color:rgba(246,234,210,.6);text-decoration:none;letter-spacing:.04em}
+.covertext{position:absolute;left:0;right:0;top:16%;text-align:center;color:#f6ead2;text-shadow:0 2px 30px rgba(0,0,0,.45)}
+.covertext .en{display:block;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:clamp(64px,15vw,168px);line-height:.9;letter-spacing:-.02em}
+.covertext small{display:block;margin-top:14px;font-size:12px;letter-spacing:.28em;text-transform:uppercase;opacity:.8}
+.scrollcue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#f6ead2;text-decoration:none;opacity:.75;padding:10px 14px}
+.scrollcue::after{content:"";display:block;width:1px;height:34px;margin:8px auto 0;background:currentColor}
+@media(prefers-reduced-motion:no-preference){.scrollcue::after{animation:cue 2.2s ease-in-out infinite}@keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:8;display:flex;align-items:center;gap:16px;padding:10px max(4vw,16px);background:light-dark(rgba(236,235,230,.86),rgba(18,17,15,.82));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transform:translateY(-100%);transition:transform .3s}
+.topbar.show{transform:none}
+.brand{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:22px;color:var(--ink);text-decoration:none;flex:none}.brand span{color:var(--gold)}
+.tnav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+.tnav a{flex:none;color:var(--ink);text-decoration:none;font-size:13px;letter-spacing:.06em;padding:8px 10px;border-radius:999px}
+.tnav a:hover{background:var(--soft)}
+.kicker{display:block;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mute)}
+.index{padding-top:clamp(48px,8vw,96px);padding-bottom:clamp(32px,6vw,72px)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:18px}
+.tile{background:var(--bg);padding:26px 22px 22px;text-decoration:none;color:var(--ink);display:grid;gap:4px;position:relative;min-height:150px;align-content:end;transition:background .2s}
+.tile:hover{background:var(--paper)}
+.tile .tname{font-family:"Nanum Myeongjo",serif;font-weight:800;font-size:28px;line-height:1.1}
+.tile .tsub{font-size:14px;color:var(--mute)}
+.tile .kicker{position:absolute;top:18px;left:22px}
+.tile .arr{position:absolute;top:14px;right:18px;font-size:18px;color:var(--gold)}
+.chapter{border-top:1px solid var(--line);padding-top:clamp(20px,4vw,48px)}
+.shead{margin-bottom:18px}
+.stitle{font-size:clamp(30px,5vw,46px);line-height:1.1;margin:6px 0 4px;font-weight:800}
+.stitle em{font-style:normal;font-family:"Noto Sans KR",sans-serif;font-weight:400;font-size:.42em;color:var(--mute);margin-left:6px;vertical-align:middle}
+.foot2{text-align:center;font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--mute);font-size:18px;padding-bottom:48px}
 /* VOICE: 필름으로 찍은 상하이 — 흐린 날의 와이탄, 비 오는 밤의 금빛 조명. 차분하고 에디토리얼하게
    IDEA: 여행 매거진의 한 꼭지 · 사진 캡션 같은 영문 라벨과 큰 세리프 제목
    PICTURE: 첫 화면의 와이탄 야경 일러스트(금빛 석조 건물, 시계탑, 안개 속 동방명주, 젖은 바닥 반사) + 핀 지도
    COLOUR and TYPE: 낮=안개 회백 #ecebe6 · 밤=먹빛 #12110f, 벽돌 #a9533c, 금빛 #d6a54a / Cormorant Garamond + 나눔명조 제목, Noto Sans KR 본문
    LAYOUT: 히어로 → 탑승권 → 날짜 탭 → 지도·타임라인 2단, 860px 이하 세로 */
-:root{color-scheme:light dark;--bg:light-dark(#ecebe6,#12110f);--paper:light-dark(#f7f6f2,#1c1a17);--ink:light-dark(#1f1d1b,#efe7d8);--mute:light-dark(#77726b,#a39a8a);--line:light-dark(#d9d6ce,#34302a);--river:light-dark(#d3d9d8,#262c2c);--tape:light-dark(rgba(169,83,60,.16),rgba(214,165,74,.18));--c:#a9533c;--soft:light-dark(#e9e3da,#2a2620);--gold:light-dark(#a87a2a,#e0b25c);--sky1:light-dark(#d9dad6,#0d0f14);--sky2:light-dark(#eeeeea,#2a2418);--bld:light-dark(#c9c3b8,#3a2d18);--win:light-dark(#efe9dc,#ffcf6e);--brick:light-dark(#a95d45,#4d2b1d);--glow:light-dark(rgba(255,255,255,0),rgba(255,190,90,.55))}
-:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+:root{color-scheme:dark;--bg:light-dark(#ecebe6,#12110f);--paper:light-dark(#f7f6f2,#1c1a17);--ink:light-dark(#1f1d1b,#efe7d8);--mute:light-dark(#77726b,#a39a8a);--line:light-dark(#d9d6ce,#34302a);--river:light-dark(#d3d9d8,#262c2c);--tape:light-dark(rgba(169,83,60,.16),rgba(214,165,74,.18));--c:#a9533c;--soft:light-dark(#e9e3da,#2a2620);--gold:light-dark(#a87a2a,#e0b25c);--sky1:light-dark(#d9dad6,#0d0f14);--sky2:light-dark(#eeeeea,#2a2418);--bld:light-dark(#c9c3b8,#3a2d18);--win:light-dark(#efe9dc,#ffcf6e);--brick:light-dark(#a95d45,#4d2b1d);--glow:light-dark(rgba(255,255,255,0),rgba(255,190,90,.55))}
+
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans KR",system-ui,-apple-system,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%;word-break:keep-all;overflow-wrap:anywhere}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.22;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.9%27 numOctaves=%272%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E")}
-.hero{position:relative;aspect-ratio:1200/460;max-height:460px;min-height:250px;width:100%;overflow:hidden;background:var(--sky1)}
+.hero{position:absolute;inset:0;overflow:hidden;background:var(--sky1)}
 .hero svg{position:absolute;inset:0;width:100%;height:100%}
 .cap{padding:clamp(16px,2.5vw,28px) max(4vw,16px) 0;max-width:1180px;margin:0 auto}
 .cap .en{font-size:clamp(40px,8vw,84px);line-height:.95;font-weight:500;letter-spacing:-.01em;display:block;color:var(--ink)}
@@ -339,7 +373,7 @@ function heroSVG(){
  const pearl=`<g fill="var(--bld)" opacity=".55"><rect x="1030" y="60" width="3" height="60"/><rect x="1024" y="110" width="15" height="130"/><circle cx="1031" cy="122" r="13"/><circle cx="1031" cy="215" r="24"/><path d="M1005 240 L1031 200 L1057 240 L1050 330 L1012 330Z"/><circle cx="1031" cy="122" r="5" fill="var(--glow)"/></g>
   <path d="M1110 330 L1110 120 Q1135 100 1160 112 L1158 330Z" fill="var(--bld)" opacity=".38"/><rect x="1180" y="190" width="20" height="140" fill="var(--bld)" opacity=".3"/>`;
  const city=`<g fill="var(--bld)">${g}</g><g fill="var(--win)" class="lit" opacity=".9">${win}</g>`;
- return`<svg viewBox="0 0 1200 460" preserveAspectRatio="xMinYMax slice" aria-hidden="true">
+ return`<svg viewBox="0 0 1200 460" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
  <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient>
  <linearGradient id="wet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky2)"/><stop offset="1" stop-color="var(--bg)"/></linearGradient>
  <filter id="bl"><feGaussianBlur stdDeviation="3 6"/></filter><filter id="haze"><feGaussianBlur stdDeviation="18"/></filter>
@@ -351,18 +385,23 @@ function heroSVG(){
  <g mask="url(#m)"><g filter="url(#bl)" transform="translate(0 660) scale(1 -1)">${city}</g></g>
  <g stroke="var(--ink)" stroke-width="3" opacity=".7"><line x1="905" y1="330" x2="905" y2="200"/><line x1="905" y1="200" x2="940" y2="196"/></g><circle cx="944" cy="197" r="5" fill="var(--win)" class="lit"/>
  <rect y="329" width="1200" height="2" fill="var(--win)" opacity=".35"/></svg>`}
-function header(){const pg=page(),P=pg==='plan';const T={plan:['Shanghai, in January','상해 2박 3일, 하루씩 한 줄로'],check:['Before we leave','떠나기 전에 한국에서 끝낼 것들'],gift:['Little things to bring home','기념품 · 쇼핑 리스트'],eat:['Where Koreans eat','한국인 픽 맛집'],deliv:['Room service, Shanghai style','호텔로 배달시키기']}[pg];return`<div class="hero">${heroSVG()}
-  <nav class="nav" aria-label="페이지"><a href="#plan" ${P?'aria-current="page"':''}>동선표</a><a href="#checklist" ${pg==='check'?'aria-current="page"':''}>준비</a><a href="#eat" ${pg==='eat'?'aria-current="page"':''}>맛집</a><a href="#delivery" ${pg==='deliv'?'aria-current="page"':''}>배달</a><a href="#souvenir" ${pg==='gift'?'aria-current="page"':''}>기념품</a></nav>
-</div>
-  <div class="cap"><small>야콩 &amp; 쑴니 · 2027. 1. 3 — 1. 5</small><span class="en">${T[0]}</span></div>
-  <header class="band" style="padding-bottom:0">
-  <h1>${T[1]}</h1>
-  <p class="sub">메트로폴로 진장 호텔 클래시크 (난징동루) <span class="zh">山西南路200号</span> · <span style="white-space:nowrap">☎ +86-21-63222888</span></p>
- </header>`}
-function render(){if(page()==='check'){renderCheck();return}if(page()==='gift'){renderGift();return}if(page()==='eat'){renderEat();return}if(page()==='deliv'){renderDeliv();return}
- const day=S.days[cur];document.documentElement.style.setProperty('--c',day.color);const P=plan(day);
- $('#app').innerHTML=header()+`
- <section class="band" style="padding-top:0;padding-bottom:0">
+const SECS=[['plan','Itinerary','동선표','하루씩 한 줄로'],['check','Before we leave','준비','한국에서 끝낼 것들'],['eat','Where to eat','맛집','한국인 픽'],['deliv','Room service','배달','호텔로 시키기'],['gift','Bring home','기념품','쇼핑 리스트']];
+function shead(k){const x=SECS.find(y=>y[0]===k);return`<div class="shead"><span class="kicker">${x[1]}</span><h2 class="stitle">${x[2]} <em>${x[3]}</em></h2></div>`}
+function shell(){$('#app').innerHTML=`
+ <header class="topbar" id="topbar"><a href="#top" class="brand">Shanghai <span>’27</span></a><nav class="tnav" aria-label="섹션">${SECS.map(x=>`<a href="#${x[0]}">${x[2]}</a>`).join('')}</nav></header>
+ <section class="cover" id="top"><div class="hero">${heroSVG()}<img class="photo" src="cover.jpg" alt="" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://unsplash.com/photos/DCEuAVqX6lk/download?w=2400'}else{this.remove()}" onload="this.classList.add('on');if(this.dataset.f)document.getElementById('credit').hidden=false"></div>
+  <div class="covertext"><span class="en">Shanghai</span><small>야콩 &amp; 쑴니 · 01.03 — 01.05.2027</small></div>
+  <a class="scrollcue" href="#index" aria-label="아래로">scroll</a><a class="credit" id="credit" hidden href="https://unsplash.com/photos/DCEuAVqX6lk">Photo · Scott Stefan / Unsplash</a></section>
+ <section class="band index" id="index"><div class="kicker">Contents</div>
+  <div class="tiles">${SECS.map(x=>`<a class="tile" href="#${x[0]}"><span class="kicker">${x[1]}</span><span class="tname">${x[2]}</span><span class="tsub">${x[3]}</span><span class="arr" aria-hidden="true">↓</span></a>`).join('')}</div></section>
+ ${SECS.map(x=>`<section class="chapter" id="${x[0]}"><div id="sec-${x[0]}"></div></section>`).join('')}
+ <footer class="band foot2">Shanghai ’27 · 야콩 &amp; 쑴니</footer>`;
+ const tb=$('#topbar'),cv=$('.cover');try{new IntersectionObserver(([e])=>tb.classList.toggle('show',!e.isIntersecting),{threshold:.15}).observe(cv)}catch(e){tb.classList.add('show')}}
+function renderAll(){render();renderCheck();renderEat();renderDeliv();renderGift()}
+function render(){
+ const day=S.days[cur];$('#plan').style.setProperty('--c',day.color);const P=plan(day);
+ $('#sec-plan').innerHTML=`
+ <section class="band" style="padding-bottom:0">${shead('plan')}<p class="sub" style="margin-bottom:6px">메트로폴로 진장 호텔 클래시크 (난징동루) <span class="zh">山西南路200号</span> · <span style="white-space:nowrap">☎ +86-21-63222888</span></p>
   <div class="passes">
    <div class="pass"><small>가는 날 · 1/3 (일) · 동방항공 MU5052</small>
     <div class="route"><span class="big">08:55</span><span>인천 T1</span><span class="arrow"></span><span class="big">10:00</span><span>푸동 T1</span></div>
@@ -374,7 +413,7 @@ function render(){if(page()==='check'){renderCheck();return}if(page()==='gift'){
     <div class="route"><span>체크인</span><span class="big">14:00</span><span class="arrow"></span><span>체크아웃</span><span class="big">12:00</span></div>
     <div class="must">무료 취소는 <b>1/2 12:00</b> (현지시각) 전까지</div></div>
   </div>
-  <div class="alert"><b>무비자 확인 필요</b> — 한국인 30일 무비자는 지금 2026.12.31까지만 공지돼 있고, 2027년 연장은 아직 발표 전이에요(11/26 기준). <a href="#checklist" style="color:inherit">체크리스트 보기</a></div>
+  <div class="alert"><b>무비자 확인 필요</b> — 한국인 30일 무비자는 지금 2026.12.31까지만 공지돼 있고, 2027년 연장은 아직 발표 전이에요(11/26 기준). <a href="#check" style="color:inherit">준비 체크리스트 보기</a></div>
   <div class="tabs" role="tablist">${S.days.map((d,i)=>`<button class="tab" role="tab" data-tab="${i}" aria-selected="${i===cur}" style="${i===cur?`background:${d.color};border-color:${d.color}`:''}"><span class="en">${['Jan 3','Jan 4','Jan 5'][i]||''}</span> ${esc(d.title)}</button>`).join('')}</div>
  </section>
  <main class="band" style="padding-top:0">
@@ -386,7 +425,7 @@ function render(){if(page()==='check'){renderCheck();return}if(page()==='gift'){
     <div class="legend"><span class="hand">${esc(day.label)} ${esc(day.title)}</span><span>번호 = 방문 순서</span><span>점선 위 숫자 = 예상 거리</span><span>하늘색 띠 = 황푸강(개략)</span><span>실제 길은 고덕지도 버튼으로</span></div>
    </section>
    <section aria-label="타임라인">
-    <div class="bar"><button class="btn pri" data-act="opt">최적 동선 계산</button><button class="btn" data-act="add">+ 장소 추가</button><button class="btn" data-act="undo" ${undoStack.length?'':'disabled'}>되돌리기</button><button class="btn" data-act="more">백업</button><span class="sync" id="sync"></span></div>
+    <div class="bar"><button class="btn pri" data-act="opt">최적 동선 계산</button><button class="btn" data-act="add">+ 장소 추가</button><button class="btn" data-act="undo" ${undoStack.length?'':'disabled'}>되돌리기</button><button class="btn" data-act="more">백업</button><span class="sync"></span></div>
     <div class="sum"><span>총 이동 <b>${fkm(P.totKm)}</b></span><span>일정 끝 <b>${toT(P.endAt)}</b></span><span>장소 <b>${day.stops.length}</b>곳</span></div>
     <ol class="tl">${P.rows.map((r,i)=>rowHTML(day,r,i,P.rows.length)).join('')}</ol>
    </section>
@@ -395,14 +434,14 @@ function render(){if(page()==='check'){renderCheck();return}if(page()==='gift'){
  </main>`;
  drawMap(day,P);bindMap();syncLabel()}
 
-function renderCheck(){document.documentElement.style.setProperty('--c','#a9533c');const C=S.checks;const n=C.length,na=C.filter(c=>c.a).length,nb=C.filter(c=>c.b).length;
+function renderCheck(){const C=S.checks;const n=C.length,na=C.filter(c=>c.a).length,nb=C.filter(c=>c.b).length;
  const secs=[...new Set(C.map(c=>c.sec))];const hint=Object.fromEntries(CHECKS.map(x=>[x[0],x[1]]));
- $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+ $('#sec-check').innerHTML=`<main class="band">${shead('check')}
   <div class="who">
    <div class="card"><div class="name">야콩</div><div class="meta">${na} / ${n} 완료</div><div class="prog"><i style="width:${n?na/n*100:0}%"></i></div></div>
    <div class="card"><div class="name">쑴니</div><div class="meta">${nb} / ${n} 완료</div><div class="prog"><i style="width:${n?nb/n*100:0}%;background:#a07a2c"></i></div></div>
   </div>
-  <div class="bar"><span class="sync" id="sync"></span></div>
+  <div class="bar"><span class="sync"></span></div>
   ${secs.map(sec=>`<section class="sec"><h2>${esc(sec)} ${hint[sec]?`<span class="hand">${esc(hint[sec])}</span>`:''}</h2>
    <div class="cl"><div class="ci head"><span>할 일</span><span>야콩</span><span>쑴니</span></div>
    ${C.filter(c=>c.sec===sec).map(c=>`<div class="ci ${c.u?'urgent':''} ${c.a&&c.b?'done':''}"><div><div class="t">${esc(c.t)}</div>${c.d?`<div class="d">${esc(c.d)}</div>`:''}${c.custom?`<button class="x" data-delck="${esc(c.id)}">삭제</button>`:''}</div>
@@ -415,8 +454,8 @@ function renderCheck(){document.documentElement.style.setProperty('--c','#a9533c
  $('#addck').onsubmit=e=>{e.preventDefault();const t=$('#ck-t').value.trim();if(!t)return;S.checks.push({id:uid(),sec:$('#ck-sec').value,t,d:'',a:false,b:false,custom:true});changed();renderCheck()};syncLabel()}
 
 function inDay(f,i){return S.days[i].stops.some(x=>x.name===f.name)}
-function renderEat(){document.documentElement.style.setProperty('--c','#a9533c');
- $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+function renderEat(){
+ $('#sec-eat').innerHTML=`<main class="band">${shead('eat')}
   <p class="sub" style="margin-bottom:14px">한국 여행자 후기에서 많이 나오는 곳을 골랐어요. 마음에 들면 날짜 버튼을 눌러 동선표에 바로 넣고, 동선표에서 「최적 동선 계산」을 누르면 돼요.</p>
   <div class="eat">${FOOD.map((f,i)=>`<article class="card ecard"><div class="ttl">${esc(f.name)} <span class="chip">${f.type==='cafe'?'디저트':'식당'}</span></div>
    <div class="meta"><span class="zh">${esc(f.zh)}</span>${f.area?` · ${esc(f.area)}`:''}</div>
@@ -427,17 +466,17 @@ function renderEat(){document.documentElement.style.setProperty('--c','#a9533c')
  </main>`;syncLabel()}
 function addFood(i,j){const f=FOOD[i],d=S.days[j];if(inDay(f,j)){toast(`이미 ${d.label}에 있어요`);return}snap();
  const st={id:uid(),name:f.name,zh:f.zh,lng:f.lng,lat:f.lat,type:f.type,menu:f.menu,price:f.price,note:f.note,stay:f.type==='cafe'?20:60};
- const ti=d.stops.findIndex(x=>x.tail);if(ti<0)d.stops.push(st);else d.stops.splice(ti,0,st);changed();renderEat();toast(`${d.label} 동선표에 넣었어요 — 「최적 동선 계산」으로 순서 정리`)}
+ const ti=d.stops.findIndex(x=>x.tail);if(ti<0)d.stops.push(st);else d.stops.splice(ti,0,st);changed();renderEat();render();toast(`${d.label} 동선표에 넣었어요 — 「최적 동선 계산」으로 순서 정리`)}
 const HOTEL_ZH='上海市黄浦区山西南路200号 锦江都城南京饭店（南京东路步行街店）';
-function renderDeliv(){document.documentElement.style.setProperty('--c','#a9533c');const D=S.deliv;const secs=[...new Set(D.map(x=>x.sec))];
- $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+function renderDeliv(){const D=S.deliv;const secs=[...new Set(D.map(x=>x.sec))];
+ $('#sec-deliv').innerHTML=`<main class="band">${shead('deliv')}
   <section class="card" style="padding:18px 20px"><h2 style="font-size:20px">주문하는 법</h2>
    <ol class="steps"><li><b>알리페이 → 「饿了么」(어러머) 미니프로그램</b>이 제일 쉬워요. 메이투안은 해외 번호로는 로그인은 돼도 배달 주문이 막힐 수 있어요.</li>
    <li>받는 주소에 아래 <b>호텔 주소</b>를 붙여넣고, 연락처는 본인 번호(+82)를 넣어요. 어려우면 호텔 프런트에 주소 입력을 부탁해도 돼요.</li>
    <li>배달은 보통 로비의 배달 선반이나 로봇에 두고 가요. 앱 지도에서 라이더 위치를 확인하고 로비로 내려가요.</li>
    <li>배달비는 보통 ¥3~10이에요. 가게 이름을 아래 「검색어 복사」로 붙여넣으면 찾기 쉬워요.</li></ol>
    <div class="addr"><div><small>호텔 주소 (받는 곳)</small><div class="zh">${esc(HOTEL_ZH)}</div><small>호텔 전화 +86-21-63222888</small></div><button class="btn pri" data-copy="${esc(HOTEL_ZH)}">주소 복사</button></div></section>
-  <div class="sum" style="margin-top:18px"><span>먹고 싶은 것에 하트 · 야콩 <b>${D.filter(x=>x.a).length}</b> · 쑴니 <b>${D.filter(x=>x.b).length}</b></span><span class="sync" id="sync"></span></div>
+  <div class="sum" style="margin-top:18px"><span>먹고 싶은 것에 하트 · 야콩 <b>${D.filter(x=>x.a).length}</b> · 쑴니 <b>${D.filter(x=>x.b).length}</b></span><span class="sync"></span></div>
   ${secs.map(sec=>`<section class="sec"><h2>${esc(sec)}</h2><div class="cl"><div class="ci head"><span>메뉴</span><span>야콩</span><span>쑴니</span></div>
    ${D.filter(x=>x.sec===sec).map(x=>`<div class="ci"><div><div class="t">${esc(x.t)} <span class="zh" style="font-weight:400;color:var(--mute);font-size:14px">${esc(x.zh)}</span></div>
     <div class="d">${x.p?`<b style="color:var(--gold);font-weight:500">${esc(x.p)}</b> · `:''}${esc(x.d)}</div>
@@ -449,11 +488,11 @@ function renderDeliv(){document.documentElement.style.setProperty('--c','#a9533c
  </main>`;
  $('#adddl').onsubmit=e=>{e.preventDefault();const t=$('#dl-t').value.trim();if(!t)return;S.deliv.push({id:uid(),sec:'우리가 추가한 것',t,zh:'',d:'',p:'',q:$('#dl-q').value.trim(),a:false,b:false,custom:true});changed();renderDeliv()};syncLabel()}
 
-function renderGift(){document.documentElement.style.setProperty('--c','#a9533c');const G=S.gifts;const secs=[...new Set(G.map(g=>g.sec))];const hint=Object.fromEntries(GIFTS.map(x=>[x[0],x[1]]));
+function renderGift(){const G=S.gifts;const secs=[...new Set(G.map(g=>g.sec))];const hint=Object.fromEntries(GIFTS.map(x=>[x[0],x[1]]));
  const na=G.filter(g=>g.a).length,nb=G.filter(g=>g.b).length;
- $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+ $('#sec-gift').innerHTML=`<main class="band">${shead('gift')}
   <p class="sub" style="margin-bottom:10px">샀으면 각자 칸에 체크해요 · 필요 없는 건 지우고, 사고 싶은 건 아래에서 추가</p>
-  <div class="sum"><span>야콩 <b>${na}</b>개 샀음</span><span>쑴니 <b>${nb}</b>개 샀음</span><span class="sync" id="sync"></span></div>
+  <div class="sum"><span>야콩 <b>${na}</b>개 샀음</span><span>쑴니 <b>${nb}</b>개 샀음</span><span class="sync"></span></div>
   ${secs.map(sec=>`<section class="sec"><h2>${esc(sec)} ${hint[sec]?`<span class="hand">${esc(hint[sec])}</span>`:''}</h2>
    <div class="cl"><div class="ci head"><span>살 것</span><span>야콩</span><span>쑴니</span></div>
    ${G.filter(g=>g.sec===sec).map(g=>`<div class="ci ${g.a&&g.b?'done':''}"><div><div class="t">${esc(g.t)} ${g.zh?`<span class="zh" style="font-weight:400;color:var(--mute);font-size:14px">${esc(g.zh)}</span>`:''}</div>
@@ -568,7 +607,7 @@ let dirty=false,pubT=null,readOnly=false;
 function save(){S.saved=Date.now();try{localStorage.setItem('sh-trip',JSON.stringify(S))}catch(e){}
  if(artifactApi&&!readOnly){dirty=true;clearTimeout(pubT);pubT=setTimeout(shareSave,2500)}syncLabel()}
 const changed=save;
-function syncLabel(){const el=$('#sync');if(!el)return;el.textContent=artifactApi&&!readOnly?(dirty?'친구 화면에 반영 중…':'✓ 친구와 같은 화면으로 동기화돼요'):readOnly?'보기 전용 — 이 기기에만 저장돼요':'이 기기에 자동 저장 · 친구에겐 「백업」 코드로'}
+function syncLabel(){const t=artifactApi&&!readOnly?(dirty?'친구 화면에 반영 중…':'✓ 친구와 같은 화면으로 동기화돼요'):readOnly?'보기 전용 — 이 기기에만 저장돼요':'이 기기에 자동 저장 · 친구에겐 「백업」 코드로';document.querySelectorAll('.sync').forEach(e=>e.textContent=t)}
 let artifactApi=null;
 try{window.claude?.use?.('artifact')?.then(a=>{artifactApi=a;syncLabel()}).catch(()=>{})}catch(e){}
 async function shareSave(){if(!artifactApi)return;S.saved=Date.now();const json=JSON.stringify(S).replace(/</g,'\\u003c');
@@ -596,7 +635,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab
  const a=t.dataset.act;if(!a)return;
  if(a==='opt')optimize();
  else if(a==='add'){draft=null;openEdit('__new')}
- else if(a==='undo'){const p=undoStack.pop();if(p){S=JSON.parse(p);save();render();toast('되돌렸어요')}}
+ else if(a==='undo'){const p=undoStack.pop();if(p){S=JSON.parse(p);save();renderAll();toast('되돌렸어요')}}
  else if(a==='share')shareSave();
  else if(a==='more')openMore();
  else if(a==='close'){closeSheet();draft=null}
@@ -606,14 +645,13 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab
   save();closeSheet();render();bindMap()}
  else if(a==='del'){snap();day.stops=st.filter(s=>s.id!==t.dataset.key);save();closeSheet();render();toast('삭제했어요 — 되돌리기 가능')}
  else if(a==='copycode')copy(btoa(unescape(encodeURIComponent(JSON.stringify(S)))),'백업 코드를 복사했어요');
- else if(a==='import'){try{const o=JSON.parse(decodeURIComponent(escape(atob($('#f-code').value.trim()))));if(!o.days)throw 0;snap();S=o;save();closeSheet();render();toast('불러왔어요')}catch(err){toast('코드가 올바르지 않아요')}}
- else if(a==='reset'){snap();S=JSON.parse(JSON.stringify(DEFAULT));save();closeSheet();view=null;render();toast('초기화했어요 — 되돌리기 가능')}
+ else if(a==='import'){try{const o=JSON.parse(decodeURIComponent(escape(atob($('#f-code').value.trim()))));if(!o.days)throw 0;snap();S=o;save();closeSheet();renderAll();toast('불러왔어요')}catch(err){toast('코드가 올바르지 않아요')}}
+ else if(a==='reset'){snap();S=JSON.parse(JSON.stringify(DEFAULT));if(!S.checks)S.checks=seedChecks();S.gifts=seedGifts();S.deliv=seedDeliv();save();closeSheet();view=null;renderAll();toast('초기화했어요 — 되돌리기 가능')}
 });
-window.addEventListener('hashchange',()=>{render();scrollTo(0,0)});
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal'){closeSheet();draft=null}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
-const ro=new ResizeObserver(()=>{if($('#fig')&&page()==='plan')drawMap(S.days[cur],plan(S.days[cur]))});
-render();ro.observe(document.body);
+const ro=new ResizeObserver(()=>{if($('#fig'))drawMap(S.days[cur],plan(S.days[cur]))});
+shell();renderAll();ro.observe(document.body);
 }
 </script>
 </body>
