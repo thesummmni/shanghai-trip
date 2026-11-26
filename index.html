@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>상해 여행 동선표</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+SC:wght@600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: 필름으로 찍은 상하이 — 흐린 날의 와이탄, 비 오는 밤의 금빛 조명. 차분하고 에디토리얼하게
+   IDEA: 여행 매거진의 한 꼭지 · 사진 캡션 같은 영문 라벨과 큰 세리프 제목
+   PICTURE: 첫 화면의 와이탄 야경 일러스트(금빛 석조 건물, 시계탑, 안개 속 동방명주, 젖은 바닥 반사) + 핀 지도
+   COLOUR and TYPE: 낮=안개 회백 #ecebe6 · 밤=먹빛 #12110f, 벽돌 #a9533c, 금빛 #d6a54a / Cormorant Garamond + 나눔명조 제목, Noto Sans KR 본문
+   LAYOUT: 히어로 → 탑승권 → 날짜 탭 → 지도·타임라인 2단, 860px 이하 세로 */
+:root{color-scheme:light dark;--bg:light-dark(#ecebe6,#12110f);--paper:light-dark(#f7f6f2,#1c1a17);--ink:light-dark(#1f1d1b,#efe7d8);--mute:light-dark(#77726b,#a39a8a);--line:light-dark(#d9d6ce,#34302a);--river:light-dark(#d3d9d8,#262c2c);--tape:light-dark(rgba(169,83,60,.16),rgba(214,165,74,.18));--c:#a9533c;--soft:light-dark(#e9e3da,#2a2620);--gold:light-dark(#a87a2a,#e0b25c);--sky1:light-dark(#d9dad6,#0d0f14);--sky2:light-dark(#eeeeea,#2a2418);--bld:light-dark(#c9c3b8,#3a2d18);--win:light-dark(#efe9dc,#ffcf6e);--brick:light-dark(#a95d45,#4d2b1d);--glow:light-dark(rgba(255,255,255,0),rgba(255,190,90,.55))}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans KR",system-ui,-apple-system,sans-serif;overflow-x:clip;-webkit-text-size-adjust:100%;word-break:keep-all;overflow-wrap:anywhere}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.22;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27160%27 height=%27160%27%3E%3Cfilter id=%27n%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%27.9%27 numOctaves=%272%27 stitchTiles=%27stitch%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23n)%27/%3E%3C/svg%3E")}
+.hero{position:relative;aspect-ratio:1200/460;max-height:460px;min-height:250px;width:100%;overflow:hidden;background:var(--sky1)}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.cap{padding:clamp(16px,2.5vw,28px) max(4vw,16px) 0;max-width:1180px;margin:0 auto}
+.cap .en{font-size:clamp(40px,8vw,84px);line-height:.95;font-weight:500;letter-spacing:-.01em;display:block;color:var(--ink)}
+.cap small{color:var(--mute);font-size:13px;letter-spacing:.04em;opacity:.85}
+.hero .nav{position:absolute;top:14px;left:max(4vw,16px);margin:0;backdrop-filter:blur(8px);background:light-dark(rgba(247,246,242,.75),rgba(28,26,23,.7))}
+@media(prefers-reduced-motion:no-preference){.hero .lit{animation:fl 6s ease-in-out infinite alternate}@keyframes fl{to{opacity:.75}}}
+.band{padding:clamp(18px,3vw,40px) max(4vw,16px);max-width:1180px;margin:0 auto}
+h1,h2,.serif{font-family:"Nanum Myeongjo",serif;font-weight:700;letter-spacing:-.01em}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.12;margin:6px 0 8px;text-wrap:balance;font-weight:800}
+h2{font-size:22px;margin:0 0 10px}
+.hand{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:21px;line-height:1.15;color:var(--gold);letter-spacing:.01em}
+.en{font-family:"Cormorant Garamond",serif;font-style:italic}
+.sub{color:var(--mute);margin:0;font-size:15px}
+.zh{font-family:"Noto Serif SC",serif}
+.nav{display:flex;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px;width:max-content;max-width:100%;margin-bottom:14px}
+.nav a{padding:9px 18px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:500;font-size:15px;min-height:40px;display:flex;align-items:center}
+.nav a[aria-current=page]{background:var(--ink);color:var(--bg)}
+.passes{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px;margin-top:22px}
+.pass{background:var(--paper);border-radius:3px;padding:20px 18px 16px;display:grid;gap:8px;position:relative;box-shadow:0 1px 0 var(--line),0 10px 24px -14px rgba(60,40,30,.35)}
+.pass::before{content:"";position:absolute;inset:6px;border:1px solid var(--line);border-radius:2px;pointer-events:none}
+
+.pass .route{display:flex;align-items:baseline;gap:6px;font-weight:500;font-size:13px;white-space:nowrap}
+.pass .big{font-family:"Nanum Myeongjo",serif;font-size:clamp(24px,7vw,30px);line-height:1;font-weight:700}
+.pass .arrow{flex:1;min-width:20px;border-top:1px dashed var(--mute);transform:translateY(-7px)}
+.pass small{color:var(--mute);font-size:13px}
+.must b,.nowrap{white-space:nowrap}
+.pass .must{background:var(--soft);border-radius:6px;padding:8px 10px;font-size:14px}
+.alert{background:light-dark(#fbe9e4,#3d2522);border-radius:10px;padding:12px 14px;font-size:15px;margin-top:16px;border:1px dashed light-dark(#d79b90,#8a5048)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 16px}
+.tab{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:9px 18px;font:inherit;font-weight:500;cursor:pointer;min-height:44px}
+.tab b{font-family:"Nanum Myeongjo",serif}
+.tab[aria-selected=true]{color:#fff}
+.tab .en{font-size:17px;margin-right:4px}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.mapbox{background:var(--paper);padding:10px 10px 0;border-radius:3px;position:sticky;top:12px;box-shadow:0 14px 30px -18px rgba(0,0,0,.5)}
+@media(max-width:860px){.mapbox{position:relative;top:0;transform:none}}
+.fig{position:relative;height:clamp(320px,52vh,520px);touch-action:none;cursor:grab;border-radius:2px;overflow:hidden}
+.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.mapctl{position:absolute;right:10px;top:10px;display:grid;gap:6px}
+.mapctl button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-size:20px;cursor:pointer}
+.pinmode{position:absolute;left:10px;right:64px;top:10px;background:var(--ink);color:var(--bg);border-radius:10px;padding:8px 12px;font-size:14px;display:none}
+.pinmode.on{display:block}
+.legend{display:flex;gap:4px 14px;flex-wrap:wrap;padding:10px 4px 12px;font-size:13px;color:var(--mute)}
+.legend .hand{font-size:20px;width:100%}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:9px 16px;font:inherit;font-size:15px;cursor:pointer;min-height:44px}
+.btn.pri{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:500}
+.btn:disabled{opacity:.45}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.nav a:focus-visible,.ck:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.sync{font-size:13px;color:var(--mute)}
+.sum{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--mute);margin-bottom:12px}
+.sum b{color:var(--ink);font-size:18px;font-family:"Nanum Myeongjo",serif}
+ol.tl{list-style:none;margin:0;padding:0}
+.leg{display:flex;align-items:center;gap:6px;margin-left:70px;padding:6px 0 6px 18px;border-left:2px dotted var(--c);font-size:13px;color:var(--mute);flex-wrap:wrap}
+.leg a{color:inherit}
+.stop{display:grid;grid-template-columns:62px minmax(0,1fr);gap:8px;align-items:start}
+.time{text-align:right;font-family:"Nanum Myeongjo",serif;font-weight:700;font-size:20px;line-height:1.1;padding-top:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.time small{display:block;font-family:"Noto Sans KR",sans-serif;font-size:13px;font-weight:400;color:var(--mute);margin-top:3px}
+.card{background:var(--paper);border-radius:14px;padding:14px 16px;box-shadow:0 1px 0 var(--line),0 8px 20px -16px rgba(60,40,30,.5);position:relative}
+.card::after{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--c)}
+.card.anchor::after{background:var(--ink)}
+.card.nopin{outline:1.5px dashed var(--c);outline-offset:-1px}
+.ttl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-weight:700;font-size:17px}
+.num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--c);color:#fff;font-size:13px;flex:none}
+.anchor .num{background:var(--ink);color:var(--bg)}
+.meta{font-size:14px;color:var(--mute);margin-top:2px}
+.warn{color:light-dark(#a8443a,#ff9d90);font-size:14px;font-weight:500;margin-top:6px}
+.ok{color:light-dark(#4f7a55,#9fd3a6);font-size:14px;font-weight:500;margin-top:6px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.acts a,.acts button{font:inherit;font-size:13px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 12px;min-height:36px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.acts a.amap{background:var(--soft);border-color:transparent;font-weight:500}
+.chip{font-size:12px;background:var(--soft);border-radius:999px;padding:2px 8px;font-weight:400}
+.note{font-size:14px;margin-top:6px;white-space:pre-wrap;color:light-dark(#5b524b,#cfc6bb)}
+li{margin-bottom:6px}
+.foot{font-size:13px;color:var(--mute);border-top:1px dashed var(--line);margin-top:30px;padding-top:14px}
+/* checklist */
+.who{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0 8px}
+.who .card{padding:16px 18px}
+.who .name{font-family:"Nanum Myeongjo",serif;font-size:24px;font-weight:700}
+.prog{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--c);border-radius:8px}
+.sec{margin-top:26px}
+.sec h2{display:flex;align-items:baseline;gap:10px}
+.sec h2 .hand{font-size:22px}
+.cl{background:var(--paper);border-radius:14px;box-shadow:0 1px 0 var(--line),0 8px 20px -16px rgba(60,40,30,.5);overflow:hidden}
+.ci{display:grid;grid-template-columns:minmax(0,1fr) 64px 64px;gap:8px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.ci:first-child{border-top:0}
+.ci.head{font-size:13px;color:var(--mute);padding:8px 14px;background:var(--soft)}
+.ci.head span{text-align:center}
+.ci .t{font-weight:500}
+.ci .d{font-size:14px;color:var(--mute);margin-top:2px}
+.ci .d a{color:inherit}
+.ci.urgent .t::before{content:"꼭! ";color:light-dark(#a8443a,#ff9d90);font-weight:700}
+.ck{justify-self:center;width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);cursor:pointer;display:grid;place-items:center;font-size:20px;color:#fff}
+.ck[aria-pressed=true]{background:var(--c);border-color:var(--c)}
+.ck.k2[aria-pressed=true]{background:#a07a2c;border-color:#a07a2c}
+.ci.done .t{text-decoration:line-through;text-decoration-color:var(--mute);color:var(--mute)}
+.ci .x{border:0;background:none;color:var(--mute);cursor:pointer;font-size:13px;padding:4px 0;text-decoration:underline}
+.addrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.addrow input{flex:1;min-width:180px;font:inherit;font-size:16px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+@media(max-width:600px){.ci{grid-template-columns:minmax(0,1fr) 48px 48px;padding:12px 10px}.ck{width:44px;height:44px}.leg{margin-left:20px}.stop{grid-template-columns:52px minmax(0,1fr)}.time{font-size:17px}}
+.modal{position:fixed;inset:0;background:rgba(30,20,15,.4);display:none;align-items:flex-end;justify-content:center;z-index:9;padding:10px}
+.modal.on{display:flex}
+@media(min-width:600px){.modal{align-items:center}}
+.sheet{background:var(--paper);color:var(--ink);border-radius:20px;padding:20px;width:min(520px,100%);max-height:90vh;overflow:auto}
+.sheet label{display:block;font-size:14px;font-weight:500;margin:10px 0 4px}
+.sheet input,.sheet select,.sheet textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10;max-width:92vw;text-align:center}
+.toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<script id="state" type="application/json">null</script>
+<script id="app-js">
+{
+const $=s=>document.querySelector(s);
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const enc=encodeURIComponent;
+const uid=()=>Math.random().toString(36).slice(2,9);
+
+/* ---------- 기본 데이터 (좌표: 고덕지도 GCJ-02, 근사치) ---------- */
+const HOTEL={name:'호텔 (메트로폴로 진장 클래시크)',zh:'锦江都城南京饭店 山西南路200号',lng:121.4812,lat:31.2378};
+const PVG={name:'푸동공항 T1',zh:'浦东国际机场T1航站楼',lng:121.8078,lat:31.1487};
+const PRESETS=[
+ ['와이탄 (외탄)','外滩',121.4905,31.2400],['예원','豫园',121.4920,31.2272],['난징동루 보행가','南京东路步行街',121.4800,31.2385],
+ ['동방명주','东方明珠',121.4997,31.2397],['상하이 타워','上海中心大厦',121.5055,31.2335],['신천지','新天地',121.4750,31.2195],
+ ['티엔즈팡','田子坊',121.4665,31.2105],['우캉맨션','武康大楼',121.4375,31.2045],['안푸루','安福路',121.4400,31.2120],
+ ['정안사','静安寺',121.4455,31.2235],['스타벅스 리저브 로스터리','星巴克臻选上海烘焙工坊',121.4600,31.2310],['인민광장','人民广场',121.4750,31.2320],
+ ['상하이 디즈니랜드','上海迪士尼乐园',121.6672,31.1440],['홍차오공항 T2','虹桥机场T2',121.3260,31.1960]];
+const RIVER=[[121.455,31.175],[121.478,31.190],[121.497,31.205],[121.494,31.222],[121.496,31.234],[121.499,31.242],[121.508,31.248],[121.522,31.250],[121.537,31.255],[121.548,31.268],[121.556,31.290],[121.565,31.320]];
+
+const DEFAULT={v:1,days:[
+ {id:'d1',label:'1/3 (일)',title:'도착 · 시내 체험',color:'#a9533c',
+  start:{...PVG,id:'s1',time:'10:00',stay:60,note:'MU5052 착륙 10:00 → 입국심사·수하물 약 1시간'},
+  end:{...HOTEL,id:'e1',note:'체크인 14:00 이후'},
+  stops:[
+   {...HOTEL,id:uid(),name:'호텔 짐 맡기기',stay:15,lock:true,note:'체크인 전이면 프런트에 짐 보관'},
+   {id:uid(),name:'치이카와 스토어',zh:'南京东路139号',lng:121.4875,lat:31.2405,stay:60,note:'2층 구조 — 2층으로 올라가면 1층으로 못 돌아가니 1층에서 먼저 고르기'},
+   {id:uid(),name:'photowith (초록배경 사진)',zh:'',lng:null,lat:null,stay:60,note:'위치 미지정: ✎ 편집 → 지도에서 핀 찍기 또는 좌표 붙여넣기'},
+   {id:uid(),name:'왕홍 체험 (예: 한이화샹)',zh:'汉衣华裳 丽水路68号',lng:121.4885,lat:31.2275,stay:180,want:'15:00',note:'예원 옆. 위챗 예약, 예약금 10%. 해 진 뒤 예원 조명 촬영이 예쁨 (1월 일몰 약 17:10)'},
+   {id:uid(),name:'헤드스파 (예: 지엔성 简宜生)',zh:'简宜生 世纪大道店',lng:121.5275,lat:31.2295,stay:90,want:'19:00',note:'영업 10:30–21:00, 예약금 ¥100. 실제 주소는 예약 후 받은 위치로 핀 보정'}]},
+ {id:'d2',label:'1/4 (월)',title:'디즈니 데이',color:'#7d6a8f',
+  start:{...HOTEL,id:'s2',time:'07:20',stay:0,note:'지하철 2호선 → 11호선 디즈니역, 약 1시간'},
+  end:{...HOTEL,id:'e2',note:''},
+  stops:[{id:uid(),name:'상하이 디즈니랜드',zh:'上海迪士尼乐园',lng:121.6672,lat:31.1440,stay:720,want:'08:30',lock:true,note:'운영시간·불꽃놀이 시간은 공식 앱(上海迪士尼度假区)에서 전날 확인'}]},
+ {id:'d3',label:'1/5 (화)',title:'여유 · 출국',color:'#a07a2c',
+  start:{...HOTEL,id:'s3',time:'10:00',stay:0,note:'체크아웃 12:00 전 — 짐은 프런트 보관 후 외출 가능'},
+  end:{...PVG,id:'e3',deadline:'14:45',note:'MU5051 17:45 출발 → 3시간 전 도착 권장'},
+  stops:[{...HOTEL,id:'tail3',name:'호텔에서 짐 찾기',stay:15,lock:true,tail:true,note:'새로 추가한 장소는 이 앞에 들어가요'}]}
+],checks:null};
+const CHECKS=[
+ ['입국 · 서류','',[
+  ['무비자 연장 발표 확인','현재 한국인 30일 무비자는 2026.12.31까지만 공지됨 (11/26 기준 2027년 연장 미발표). 12월 초까지 발표 없으면 관광비자(L) 신청 필요 — 호텔 무료취소는 1/2 12:00까지',1],
+  ['여권 유효기간 6개월 이상','입국일 기준 2027년 7월 이후까지 남아있는지'],
+  ['온라인 입국신고서 작성','출국 전 국가이민관리국(NIA 12367) 앱·위챗 미니프로그램에서 미리 작성'],
+  ['여행자보험 가입',''],
+  ['동방항공 온라인 체크인','출발 24시간 전부터 · 동방항공 앱/웹 (MU5052)']]],
+ ['결제','현금 거의 안 써요',[
+  ['알리페이 설치 · 여권 실명인증 · 카드 등록','해외결제 수수료 없는 카드(트래블로그·트래블월렛 등) 추천. 인증문자 때문에 한국에서 미리!',1],
+  ['위챗 가입 · 위챗페이 카드 등록','왕홍·헤드스파 예약 연락도 위챗으로 해요'],
+  ['트래블카드 발급 · 위안화 충전','유니온페이 겸용이면 더 편해요'],
+  ['비상용 현금 조금','200~300위안 정도']]],
+ ['통신','',[
+  ['eSIM 또는 데이터 로밍','중국 현지 유심·와이파이로는 카톡·인스타·구글이 막혀요 → 로밍이나 우회되는 eSIM으로',1],
+  ['보조배터리','지도·결제 모두 폰으로 해서 필수 · 기내 반입 규정 확인']]],
+ ['앱 설치','',[
+  ['고덕지도 (Amap)','이 페이지의 「고덕지도」 버튼이 앱으로 열려요'],
+  ['디디 (DiDi) 택시','앱 또는 알리페이 안 미니프로그램 · 결제수단 연결해두기'],
+  ['메이투안 · 다중디엔핑','맛집 리뷰·쿠폰·줄서기 · 가입 막히면 알리페이 안에서 검색'],
+  ['알리페이 지하철 승차코드','알리페이에서 「上海地铁」 검색 → 승차코드 활성화'],
+  ['번역 앱 (파파고 등)','중국어 오프라인 번역 미리 다운로드'],
+  ['상하이 디즈니 공식 앱','1/4 대기시간·쇼 시간·프리미어 액세스'],
+  ['샤오홍슈 (小红书)','핫플·사진 스팟 검색'],
+  ['동방항공 앱 · 트립닷컴','탑승권·호텔 바우처 확인']]],
+ ['예약','',[
+  ['디즈니 1일권 (1/4)','날짜 지정 티켓 · 여권 정보로 예매'],
+  ['왕홍 체험 예약','위챗/인스타 DM · 예약금 결제'],
+  ['헤드스파 예약','예약금 ¥100 · 받은 주소로 지도 핀 보정'],
+  ['photowith 위치·예약 확인','동선표에 위치 핀 찍기']]],
+ ['짐','1월 상하이는 춥고 습해요',[
+  ['따뜻한 옷 · 핫팩','1월 상하이는 대략 0~8°C'],
+  ['멀티 어댑터','중국 콘센트는 모양이 섞여 있어요'],
+  ['상비약 · 샤워기 필터',''],
+  ['디즈니용 편한 신발','']]]];
+function seedChecks(){const out=[];CHECKS.forEach(([sec,hint,items])=>items.forEach(([t,d,u])=>out.push({id:uid(),sec,t,d:d||'',u:!!u,a:false,b:false})));return out}
+
+let S;try{S=JSON.parse($('#state').textContent)}catch(e){}
+try{const L=JSON.parse(localStorage.getItem('sh-trip')||'null');if(L&&(!S||(L.saved||0)>(S.saved||0)))S=L}catch(e){}
+if(!S||!S.days)S=JSON.parse(JSON.stringify(DEFAULT));
+if(!S.checks)S.checks=seedChecks();
+S.days.forEach(d=>{const D=DEFAULT.days.find(x=>x.id===d.id);if(D)d.color=D.color});
+let cur=(()=>{try{return +sessionStorage.getItem('sh-cur')||0}catch(e){return 0}})(),view=null,pinFor=null,pendingPin=null,undoStack=[];
+
+/* ---------- 거리 · 시간 ---------- */
+const R=6371,rad=x=>x*Math.PI/180;
+function km(a,b){if(a.lng==null||b.lng==null)return null;const dLa=rad(b.lat-a.lat),dLo=rad(b.lng-a.lng);const h=Math.sin(dLa/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))*1.3}
+function travel(d){if(d==null)return{min:20,mode:'?',label:'위치 미정'};if(d<0.05)return{min:0,mode:'same',label:'같은 곳'};
+ if(d<=1.3)return{min:Math.round(d*13),mode:'walk',label:'도보'};
+ return{min:Math.round(8+Math.min(d,10)/22*60+Math.max(d-10,0)/55*60),mode:'car',label:'택시'}}
+const toM=t=>{if(!t)return null;const[h,m]=t.split(':').map(Number);return h*60+m};
+const toT=m=>{m=Math.round(m);const h=Math.floor(m/60)%24,mm=((m%60)+60)%60;return String(h).padStart(2,'0')+':'+String(mm).padStart(2,'0')};
+const fkm=d=>d==null?'?':d<1?Math.round(d*1000)+'m':d.toFixed(1)+'km';
+
+function plan(day){
+ const seq=[day.start,...day.stops,day.end],rows=[];let t=toM(day.start.time)||540,totKm=0,prev=day.start;
+ rows.push({s:day.start,arr:t,beg:t,leave:t+(day.start.stay||0),anchor:'start'});t+=day.start.stay||0;
+ let pp=day.start;
+ for(let i=1;i<seq.length;i++){const s=seq[i];const from=(pp.lng==null)?prev:pp;const d=km(from,s);const tr=travel(d);if(d)totKm+=d;
+  const arr=t+tr.min;const w=toM(s.want);const beg=w!=null&&w>arr?w:arr;const isEnd=i===seq.length-1;const leave=isEnd?beg:beg+(+s.stay||0);
+  rows.push({s,arr,beg,leave,d,tr,from,late:w!=null&&arr>w+5,anchor:isEnd?'end':null});t=leave;if(s.lng!=null)pp=s;prev=s}
+ return{rows,totKm,endAt:t}}
+
+/* ---------- 최적 동선 (고정 안 된 장소만 재배치, 출발/도착 고정) ---------- */
+function optimize(){const day=S.days[cur];const st=day.stops;
+ const slots=[],free=[];st.forEach((s,i)=>{if(!s.lock&&s.lng!=null&&!s.want){slots.push(i);free.push(s)}});
+ if(free.length<2){toast('재배치할 장소가 2개 이상 필요해요 (고정·희망시각 장소는 제외)');return}
+ const cost=order=>{const arr=st.slice();slots.forEach((p,k)=>arr[p]=order[k]);let c=0,pr=day.start;for(const s of [...arr,day.end]){if(s.lng==null)continue;c+=km(pr,s);pr=s}return c};
+ let best=free.slice(),bc=cost(best);
+ if(free.length<=8){const perm=(a,n)=>{if(n===1){const c=cost(a);if(c<bc){bc=c;best=a.slice()}return}for(let i=0;i<n;i++){perm(a,n-1);const j=n%2?0:i;[a[j],a[n-1]]=[a[n-1],a[j]]}};perm(free.slice(),free.length)}
+ else{let imp=true;while(imp){imp=false;for(let i=0;i<best.length-1;i++)for(let j=i+1;j<best.length;j++){const c=best.slice(0,i).concat(best.slice(i,j+1).reverse(),best.slice(j+1));const cc=cost(c);if(cc<bc-1e-6){best=c;bc=cc;imp=true}}}}
+ const before=cost(free);snap();slots.forEach((p,k)=>st[p]=best[k]);save();render();
+ toast(before-bc>0.05?`이동거리 ${fkm(before)} → ${fkm(bc)} 로 줄였어요`:'이미 최적 순서예요')}
+
+/* ---------- 링크 ---------- */
+function gcj2wgs(lng,lat){const a=6378245,ee=0.00669342162296594323;const tl=(x,y)=>{let r=-100+2*x+3*y+0.2*y*y+0.1*x*y+0.2*Math.sqrt(Math.abs(x));r+=(20*Math.sin(6*x*Math.PI)+20*Math.sin(2*x*Math.PI))*2/3;r+=(20*Math.sin(y*Math.PI)+40*Math.sin(y/3*Math.PI))*2/3;r+=(160*Math.sin(y/12*Math.PI)+320*Math.sin(y*Math.PI/30))*2/3;return r};
+ const tg=(x,y)=>{let r=300+x+2*y+0.1*x*x+0.1*x*y+0.1*Math.sqrt(Math.abs(x));r+=(20*Math.sin(6*x*Math.PI)+20*Math.sin(2*x*Math.PI))*2/3;r+=(20*Math.sin(x*Math.PI)+40*Math.sin(x/3*Math.PI))*2/3;r+=(150*Math.sin(x/12*Math.PI)+300*Math.sin(x/30*Math.PI))*2/3;return r};
+ let dLat=tl(lng-105,lat-35),dLng=tg(lng-105,lat-35);const rl=lat/180*Math.PI;let m=Math.sin(rl);m=1-ee*m*m;const sm=Math.sqrt(m);
+ dLat=dLat*180/((a*(1-ee))/(m*sm)*Math.PI);dLng=dLng*180/(a/sm*Math.cos(rl)*Math.PI);return[lng-dLng,lat-dLat]}
+const nm=s=>s.zh||s.name;
+const amapPin=s=>s.lng==null?`https://uri.amap.com/search?keyword=${enc(nm(s))}&city=310000&callnative=1`:`https://uri.amap.com/marker?position=${s.lng},${s.lat}&name=${enc(nm(s))}&coordinate=gaode&callnative=1`;
+const amapNav=(a,b,mode)=>`https://uri.amap.com/navigation?from=${a.lng},${a.lat},${enc(nm(a))}&to=${b.lng},${b.lat},${enc(nm(b))}&mode=${mode}&policy=1&coordinate=gaode&callnative=1`;
+const appleNav=(b,mode)=>{const[x,y]=gcj2wgs(b.lng,b.lat);return`https://maps.apple.com/?daddr=${y.toFixed(6)},${x.toFixed(6)}&q=${enc(b.name)}&dirflg=${mode==='walk'?'w':mode==='bus'?'r':'d'}`};
+
+/* ---------- 렌더 ---------- */
+const page=()=>location.hash==='#checklist'?'check':'plan';
+function heroSVG(){
+ // 와이탄 석조 건물 줄 (x, 폭, 높이, 지붕: d=돔, c=시계탑, p=박공, f=평지붕)
+ const B=[[0,150,250,'p'],[150,120,215,'f'],[270,110,270,'d'],[380,95,235,'f'],[475,70,300,'c'],[545,130,225,'p'],[675,90,195,'f'],[765,85,175,'d']];
+ const base=330;let g='',win='';
+ B.forEach(([x,w,h,r])=>{const y=base-h;const br=x===545;g+=br?`<g fill="var(--brick)">`:'';g+=`<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`;
+  if(r==='d')g+=`<path d="M${x+w*.2} ${y} Q${x+w/2} ${y-w*.55} ${x+w*.8} ${y}Z"/><rect x="${x+w/2-2}" y="${y-w*.55-16}" width="4" height="18"/>`;
+  if(r==='c')g+=`<rect x="${x+w*.2}" y="${y-60}" width="${w*.6}" height="62"/><path d="M${x+w*.2} ${y-60} L${x+w/2} ${y-95} L${x+w*.8} ${y-60}Z"/><circle cx="${x+w/2}" cy="${y-38}" r="9" class="lit" fill="var(--win)"/>`;
+  if(r==='p')g+=`<path d="M${x+8} ${y} L${x+w*.3} ${y-38} L${x+w*.55} ${y} Z M${x+w*.55} ${y} L${x+w*.78} ${y-30} L${x+w-6} ${y}Z"/>`;
+  if(br)g+='</g>';for(let yy=y+16;yy<base-22;yy+=24)for(let xx=x+10;xx<x+w-14;xx+=17)win+=`<rect x="${xx}" y="${yy}" width="8" height="13" rx="4"/>`});
+ const pearl=`<g fill="var(--bld)" opacity=".55"><rect x="1030" y="60" width="3" height="60"/><rect x="1024" y="110" width="15" height="130"/><circle cx="1031" cy="122" r="13"/><circle cx="1031" cy="215" r="24"/><path d="M1005 240 L1031 200 L1057 240 L1050 330 L1012 330Z"/><circle cx="1031" cy="122" r="5" fill="var(--glow)"/></g>
+  <path d="M1110 330 L1110 120 Q1135 100 1160 112 L1158 330Z" fill="var(--bld)" opacity=".38"/><rect x="1180" y="190" width="20" height="140" fill="var(--bld)" opacity=".3"/>`;
+ const city=`<g fill="var(--bld)">${g}</g><g fill="var(--win)" class="lit" opacity=".9">${win}</g>`;
+ return`<svg viewBox="0 0 1200 460" preserveAspectRatio="xMinYMax slice" aria-hidden="true">
+ <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky1)"/><stop offset="1" stop-color="var(--sky2)"/></linearGradient>
+ <linearGradient id="wet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky2)"/><stop offset="1" stop-color="var(--bg)"/></linearGradient>
+ <filter id="bl"><feGaussianBlur stdDeviation="3 6"/></filter><filter id="haze"><feGaussianBlur stdDeviation="18"/></filter>
+ <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="m"><rect x="0" y="330" width="1200" height="130" fill="url(#fade)"/></mask></defs>
+ <rect width="1200" height="460" fill="url(#sky)"/>
+ <ellipse cx="400" cy="300" rx="520" ry="120" fill="var(--glow)" filter="url(#haze)"/>
+ ${pearl}${city}
+ <rect y="330" width="1200" height="130" fill="url(#wet)"/>
+ <g mask="url(#m)"><g filter="url(#bl)" transform="translate(0 660) scale(1 -1)">${city}</g></g>
+ <g stroke="var(--ink)" stroke-width="3" opacity=".7"><line x1="905" y1="330" x2="905" y2="200"/><line x1="905" y1="200" x2="940" y2="196"/></g><circle cx="944" cy="197" r="5" fill="var(--win)" class="lit"/>
+ <rect y="329" width="1200" height="2" fill="var(--win)" opacity=".35"/></svg>`}
+function header(){const P=page()==='plan';return`<div class="hero">${heroSVG()}
+  <nav class="nav" aria-label="페이지"><a href="#plan" ${P?'aria-current="page"':''}>동선표</a><a href="#checklist" ${!P?'aria-current="page"':''}>준비 체크리스트</a></nav>
+</div>
+  <div class="cap"><small>야콩 &amp; 쑴니 · 2027. 1. 3 — 1. 5</small><span class="en">${P?'Shanghai, in January':'Before we leave'}</span></div>
+  <header class="band" style="padding-bottom:0">
+  <h1>${P?'상해 2박 3일, 하루씩 한 줄로':'떠나기 전에 한국에서 끝낼 것들'}</h1>
+  <p class="sub">메트로폴로 진장 호텔 클래시크 (난징동루) <span class="zh">山西南路200号</span> · <span style="white-space:nowrap">☎ +86-21-63222888</span></p>
+ </header>`}
+function render(){if(page()==='check'){renderCheck();return}
+ const day=S.days[cur];document.documentElement.style.setProperty('--c',day.color);const P=plan(day);
+ $('#app').innerHTML=header()+`
+ <section class="band" style="padding-top:0;padding-bottom:0">
+  <div class="passes">
+   <div class="pass"><small>가는 날 · 1/3 (일) · 동방항공 MU5052</small>
+    <div class="route"><span class="big">08:55</span><span>인천 T1</span><span class="arrow"></span><span class="big">10:00</span><span>푸동 T1</span></div>
+    <div class="must">인천공항 <b>06:55</b>까지 도착 (2시간 전) · 상해는 한국보다 1시간 느려요</div></div>
+   <div class="pass"><small>오는 날 · 1/5 (화) · 동방항공 MU5051</small>
+    <div class="route"><span class="big">17:45</span><span>푸동 T1</span><span class="arrow"></span><span class="big">20:45</span><span>인천 T1</span></div>
+    <div class="must">푸동공항 <b>14:45</b>까지 도착 (3시간 전 권장) · 늦어도 <b>15:45</b> · 호텔에서 택시 약 1시간</div></div>
+   <div class="pass"><small>숙소 · 트윈룸 (싱글 2) · 조식 불포함</small>
+    <div class="route"><span>체크인</span><span class="big">14:00</span><span class="arrow"></span><span>체크아웃</span><span class="big">12:00</span></div>
+    <div class="must">무료 취소는 <b>1/2 12:00</b> (현지시각) 전까지</div></div>
+  </div>
+  <div class="alert"><b>무비자 확인 필요</b> — 한국인 30일 무비자는 지금 2026.12.31까지만 공지돼 있고, 2027년 연장은 아직 발표 전이에요(11/26 기준). <a href="#checklist" style="color:inherit">체크리스트 보기</a></div>
+  <div class="tabs" role="tablist">${S.days.map((d,i)=>`<button class="tab" role="tab" data-tab="${i}" aria-selected="${i===cur}" style="${i===cur?`background:${d.color};border-color:${d.color}`:''}"><span class="en">${['Jan 3','Jan 4','Jan 5'][i]||''}</span> ${esc(d.title)}</button>`).join('')}</div>
+ </section>
+ <main class="band" style="padding-top:0">
+  <div class="grid">
+   <section class="mapbox" aria-label="지도">
+    <div class="fig" id="fig"><svg id="map"></svg>
+     <div class="pinmode ${pinFor?'on':''}">지도를 탭해서 위치를 찍어주세요 <button class="btn" data-act="pincancel" style="min-height:32px;padding:4px 10px;margin-left:6px">취소</button></div>
+     <div class="mapctl"><button data-z="1.5" aria-label="확대">+</button><button data-z="0.67" aria-label="축소">−</button><button data-z="0" aria-label="전체 보기">⤢</button></div></div>
+    <div class="legend"><span class="hand">${esc(day.label)} ${esc(day.title)}</span><span>번호 = 방문 순서</span><span>점선 위 숫자 = 예상 거리</span><span>하늘색 띠 = 황푸강(개략)</span><span>실제 길은 고덕지도 버튼으로</span></div>
+   </section>
+   <section aria-label="타임라인">
+    <div class="bar"><button class="btn pri" data-act="opt">최적 동선 계산</button><button class="btn" data-act="add">+ 장소 추가</button><button class="btn" data-act="undo" ${undoStack.length?'':'disabled'}>되돌리기</button><button class="btn" data-act="more">백업</button><span class="sync" id="sync"></span></div>
+    <div class="sum"><span>총 이동 <b>${fkm(P.totKm)}</b></span><span>일정 끝 <b>${toT(P.endAt)}</b></span><span>장소 <b>${day.stops.length}</b>곳</span></div>
+    <ol class="tl">${P.rows.map((r,i)=>rowHTML(day,r,i,P.rows.length)).join('')}</ol>
+   </section>
+  </div>
+  <p class="foot">좌표는 고덕지도 기준(GCJ-02) 근사치예요. 이동시간은 직선거리×1.3으로 추정한 값(1.3km 이하 도보, 그 이상 택시)이라 실제와 다를 수 있어요 — 움직이기 직전에 「고덕 길찾기」로 확인하세요. 고덕지도 앱이 깔려 있으면 버튼이 앱으로 열려요. 아이폰 Safari에서 공유 → 「홈 화면에 추가」하면 앱처럼 쓸 수 있어요.</p>
+ </main>`;
+ drawMap(day,P);bindMap();syncLabel()}
+
+function renderCheck(){document.documentElement.style.setProperty('--c','#a9533c');const C=S.checks;const n=C.length,na=C.filter(c=>c.a).length,nb=C.filter(c=>c.b).length;
+ const secs=[...new Set(C.map(c=>c.sec))];const hint=Object.fromEntries(CHECKS.map(x=>[x[0],x[1]]));
+ $('#app').innerHTML=header()+`<main class="band" style="padding-top:0">
+  <div class="who">
+   <div class="card"><div class="name">야콩</div><div class="meta">${na} / ${n} 완료</div><div class="prog"><i style="width:${n?na/n*100:0}%"></i></div></div>
+   <div class="card"><div class="name">쑴니</div><div class="meta">${nb} / ${n} 완료</div><div class="prog"><i style="width:${n?nb/n*100:0}%;background:#a07a2c"></i></div></div>
+  </div>
+  <div class="bar"><span class="sync" id="sync"></span></div>
+  ${secs.map(sec=>`<section class="sec"><h2>${esc(sec)} ${hint[sec]?`<span class="hand">${esc(hint[sec])}</span>`:''}</h2>
+   <div class="cl"><div class="ci head"><span>할 일</span><span>야콩</span><span>쑴니</span></div>
+   ${C.filter(c=>c.sec===sec).map(c=>`<div class="ci ${c.u?'urgent':''} ${c.a&&c.b?'done':''}"><div><div class="t">${esc(c.t)}</div>${c.d?`<div class="d">${esc(c.d)}</div>`:''}${c.custom?`<button class="x" data-delck="${esc(c.id)}">삭제</button>`:''}</div>
+    <button class="ck" data-ck="${esc(c.id)}" data-who="a" aria-pressed="${c.a}" aria-label="야콩 ${esc(c.t)}">${c.a?'✓':''}</button>
+    <button class="ck k2" data-ck="${esc(c.id)}" data-who="b" aria-pressed="${c.b}" aria-label="쑴니 ${esc(c.t)}">${c.b?'✓':''}</button></div>`).join('')}</div></section>`).join('')}
+  <section class="sec"><h2>우리만의 할 일 추가</h2>
+   <form class="addrow" id="addck"><select id="ck-sec" class="btn" aria-label="분류">${secs.map(s=>`<option>${esc(s)}</option>`).join('')}</select><input id="ck-t" placeholder="예: 디즈니 머리띠 사기" aria-label="할 일"><button class="btn pri">추가</button></form></section>
+  <p class="foot">무비자 정보는 2026년 11월 26일 기준이에요. 주한중국대사관 공지를 한 번 더 확인하세요. 앱 가입 방식은 자주 바뀌니까 막히는 부분이 있으면 알리페이 안의 미니프로그램으로 대신할 수 있어요.</p>
+ </main>`;
+ $('#addck').onsubmit=e=>{e.preventDefault();const t=$('#ck-t').value.trim();if(!t)return;S.checks.push({id:uid(),sec:$('#ck-sec').value,t,d:'',a:false,b:false,custom:true});changed();renderCheck()};syncLabel()}
+
+function rowHTML(day,r,i,n){const s=r.s,isA=!!r.anchor,leg=r.tr?`<li class="leg">${r.tr.mode==='?'?'위치 미정 구간 (20분 가정)':r.tr.mode==='same'?'같은 장소':`${r.tr.label} 약 ${r.tr.min}분 · ${fkm(r.d)}`}
+  ${r.tr.mode!=='?'&&r.tr.mode!=='same'&&r.from.lng!=null&&s.lng!=null?` · <a href="${esc(amapNav(r.from,s,r.tr.mode==='walk'?'walk':'car'))}">고덕 길찾기</a> · <a href="${esc(amapNav(r.from,s,'bus'))}">대중교통</a> · <a href="${esc(appleNav(s,r.tr.mode))}">Apple 지도</a>`:''}</li>`:'';
+ let warn='';
+ if(r.late)warn=`<div class="warn">⚠ 희망 시각 ${esc(s.want)}보다 ${Math.round(r.arr-toM(s.want))}분 늦게 도착</div>`;
+ if(r.anchor==='end'&&s.deadline){const dl=toM(s.deadline),slack=dl-r.arr;warn=slack<0?`<div class="warn">⚠ 공항 도착 목표 ${esc(s.deadline)}보다 ${-slack}분 늦어요 — 일정을 줄이세요</div>`:`<div class="ok">✓ 목표 ${esc(s.deadline)}까지 ${slack}분 여유 · 마지막 장소에서 늦어도 ${toT(dl-r.tr.min)} 출발</div>`}
+ const num=r.anchor==='start'?'출':r.anchor==='end'?'도':i;
+ const tm=r.anchor==='start'?`${toT(r.beg)}<small>${s.stay?'~'+toT(r.leave):'출발'}</small>`:r.anchor==='end'?`${toT(r.arr)}<small>도착</small>`:`${toT(r.beg)}<small>~${toT(r.leave)}</small>`;
+ const editKey=r.anchor?r.anchor:s.id;
+ return`${leg}<li class="stop"><div class="time">${tm}</div><div class="card ${isA?'anchor':''} ${s.lng==null?'nopin':''}">
+  <div class="ttl"><span class="num">${num}</span>${esc(s.name)}${s.lock?'<span class="lock">순서 고정</span>':''}${s.want&&!isA?`<span class="lock">희망 ${esc(s.want)}</span>`:''}</div>
+  <div class="meta">${s.zh?`<span class="zh">${esc(s.zh)}</span> · `:''}${isA?(r.anchor==='start'?(s.stay?`${s.stay}분 머무름`:''):''):`${s.stay}분 머무름`}${s.lng==null?' · <b>위치 미지정</b>':''}${r.beg>r.arr+1&&!isA?` · ${Math.round(r.beg-r.arr)}분 대기`:''}</div>
+  ${s.note?`<div class="note">${esc(s.note)}</div>`:''}${warn}
+  <div class="acts"><a class="amap" href="${esc(amapPin(s))}">고덕지도</a>${s.zh?`<button data-copy="${esc(s.zh)}">중국어 복사</button>`:''}<button data-edit="${esc(editKey)}">✎ 편집</button>${!isA?`<button data-up="${esc(s.id)}" aria-label="위로">↑</button><button data-down="${esc(s.id)}" aria-label="아래로">↓</button>`:''}<button data-pin="${esc(editKey)}">핀 찍기</button></div>
+ </div></li>`}
+
+/* ---------- 지도 (SVG, 확대·이동·핀찍기) ---------- */
+let proj=null;
+function drawMap(day,P){const svg=$('#map'),fig=$('#fig');const W=fig.clientWidth,H=fig.clientHeight;if(!W)return;
+ const pts=P.rows.map(r=>r.s).filter(s=>s.lng!=null);const ky=1/Math.cos(rad(31.2));
+ if(!view){const near=pts.filter(p=>!/공항/.test(p.name));const fitPts=near.length>=2?near:pts;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const p of fitPts){x0=Math.min(x0,p.lng);x1=Math.max(x1,p.lng);y0=Math.min(y0,p.lat);y1=Math.max(y1,p.lat)}
+  if(!pts.length){x0=121.45;x1=121.52;y0=31.21;y1=31.25}const span=Math.max((x1-x0),(y1-y0)*ky,0.02)*1.35;view={cx:(x0+x1)/2,cy:(y0+y1)/2,span}}
+ const sc=Math.min(W,H)/view.span;const X=l=>W/2+(l-view.cx)*sc,Y=a=>H/2-(a-view.cy)*sc*ky;
+ proj={inv:(x,y)=>[view.cx+(x-W/2)/sc,view.cy-(y-H/2)/(sc*ky)],sc};
+ const c=day.color;let g=`<rect width="${W}" height="${H}" fill="var(--paper)"/>`;
+ // 격자 (1km)
+ const step=0.0105;for(let l=Math.floor((view.cx-view.span)/step)*step;l<view.cx+view.span;l+=step){const x=X(l);if(x>0&&x<W)g+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="var(--line)" stroke-width="0.5" stroke-dasharray="1 5"/>`}
+ for(let a=Math.floor((view.cy-view.span)/(step/ky))*(step/ky);a<view.cy+view.span;a+=step/ky){const y=Y(a);if(y>0&&y<H)g+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="var(--line)" stroke-width="0.5" stroke-dasharray="1 5"/>`}
+ g+=`<polyline points="${RIVER.map(p=>X(p[0])+','+Y(p[1])).join(' ')}" fill="none" stroke="var(--river)" stroke-width="${Math.max(8,0.0045*sc)}" stroke-linecap="round" stroke-linejoin="round"/>`;
+ const line=pts.map(p=>X(p.lng)+','+Y(p.lat)).join(' ');
+ g+=`<polyline points="${line}" fill="none" stroke="${c}" stroke-width="3" stroke-dasharray="7 5" stroke-linejoin="round" opacity=".85"/>`;
+ // 구간 거리
+ P.rows.forEach(r=>{if(!r.d||r.d<0.05||r.from.lng==null||r.s.lng==null)return;const mx=(X(r.from.lng)+X(r.s.lng))/2,my=(Y(r.from.lat)+Y(r.s.lat))/2;const t=fkm(r.d);const w=t.length*7+10;
+  g+=`<rect x="${mx-w/2}" y="${my-10}" width="${w}" height="20" rx="10" fill="var(--paper)" stroke="${c}" stroke-width="1"/><text x="${mx}" y="${my+4}" text-anchor="middle" font-size="12" fill="var(--ink)">${t}</text>`});
+ // 핀 (같은 위치는 겹치지 않게 살짝 옆으로)
+ const seen={};P.rows.forEach((r,i)=>{const s=r.s;if(s.lng==null)return;const k=s.lng.toFixed(4)+s.lat.toFixed(4);const o=(seen[k]=(seen[k]||0)+1)-1;
+  const x=X(s.lng)+o*22,y=Y(s.lat);const lab=r.anchor==='start'?'출':r.anchor==='end'?'도':String(i);const fill=r.anchor?'var(--ink)':c;
+  g+=`<g><ellipse cx="${x}" cy="${y+2}" rx="7" ry="3" fill="#000" opacity=".18"/><path d="M${x} ${y} C${x-4} ${y-10} ${x-13} ${y-14} ${x-13} ${y-24} A13 13 0 1 1 ${x+13} ${y-24} C${x+13} ${y-14} ${x+4} ${y-10} ${x} ${y}Z" fill="${fill}" stroke="var(--paper)" stroke-width="2"/><text x="${x}" y="${y-20}" text-anchor="middle" font-size="12" font-weight="700" fill="${r.anchor?'var(--bg)':'#fff'}">${lab}</text>
+  ${o===0?`<text x="${x+16}" y="${y-28}" font-size="12" font-weight="500" fill="var(--ink)" stroke="var(--paper)" stroke-width="3" paint-order="stroke">${esc(s.name.length>14?s.name.slice(0,13)+'…':s.name)}</text>`:''}</g>`});
+ if(pendingPin){const x=X(pendingPin[0]),y=Y(pendingPin[1]);g+=`<circle cx="${x}" cy="${y}" r="9" fill="none" stroke="${c}" stroke-width="3"/>`}
+ // 축척
+ const kmPx=0.0105*sc;g+=`<line x1="14" y1="${H-16}" x2="${14+kmPx}" y2="${H-16}" stroke="var(--ink)" stroke-width="2"/><text x="14" y="${H-22}" font-size="12" fill="var(--mute)">1km</text>`;
+ svg.innerHTML=g}
+
+/* ---------- 지도 조작 ---------- */
+let drag=null;
+function bindMap(){const fig=$('#fig');if(!fig||fig._b)return;fig._b=1;
+ fig.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;drag={x:e.clientX,y:e.clientY,cx:view.cx,cy:view.cy,moved:false};fig.setPointerCapture(e.pointerId)});
+ fig.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>5)drag.moved=true;if(!drag.moved)return;view.cx=drag.cx-dx/proj.sc;view.cy=drag.cy+dy/(proj.sc/Math.cos(rad(31.2)));drawMap(S.days[cur],plan(S.days[cur]))});
+ fig.addEventListener('pointerup',e=>{if(drag&&!drag.moved&&pinFor){const b=fig.getBoundingClientRect();const[lng,lat]=proj.inv(e.clientX-b.left,e.clientY-b.top);setPin(pinFor,lng,lat)}drag=null});
+ fig.addEventListener('wheel',e=>{e.preventDefault();view.span*=e.deltaY>0?1.15:0.87;drawMap(S.days[cur],plan(S.days[cur]))},{passive:false})}
+
+function findStop(key){const d=S.days[cur];if(key==='start')return d.start;if(key==='end')return d.end;return d.stops.find(s=>s.id===key)}
+function setPin(key,lng,lat){if(key==='__new'){pendingPin=[+lng.toFixed(5),+lat.toFixed(5)];pinFor=null;render();openEdit('__new');return}
+ const s=findStop(key);if(!s)return;snap();s.lng=+lng.toFixed(5);s.lat=+lat.toFixed(5);pinFor=null;save();render();toast(`「${s.name}」 위치를 찍었어요`)}
+
+/* ---------- 편집 시트 ---------- */
+let draft=null;
+function openEdit(key){const d=S.days[cur];const isNew=key==='__new';const s=isNew?(draft||{id:uid(),name:'',zh:'',stay:60}):findStop(key);if(!s)return;
+ if(isNew&&pendingPin){s.lng=pendingPin[0];s.lat=pendingPin[1];pendingPin=null}draft=isNew?s:null;
+ const isA=key==='start'||key==='end';
+ $('#sheet').innerHTML=`<h2>${isNew?'장소 추가':'편집'} · ${esc(d.label)}</h2>
+ ${isNew?`<label for="f-pre">자주 가는 곳에서 고르기</label><select id="f-pre"><option value="">직접 입력</option>${PRESETS.map((p,i)=>`<option value="${i}">${esc(p[0])} ${esc(p[1])}</option>`).join('')}</select>`:''}
+ <label for="f-name">이름</label><input id="f-name" value="${esc(s.name)}" placeholder="예: 우캉맨션">
+ <label for="f-zh">중국어 이름·주소 (택시 기사님께 보여줄 글)</label><input id="f-zh" value="${esc(s.zh||'')}" placeholder="例: 武康大楼">
+ <label for="f-ll">좌표 (경도,위도 — 고덕지도 기준)</label><input id="f-ll" inputmode="decimal" value="${s.lng!=null?esc(s.lng+','+s.lat):''}" placeholder="121.4375,31.2045 — 비워두면 위치 미지정">
+ <div class="acts"><button data-act="pickmap">지도에서 핀 찍기</button>${s.zh||s.name?`<a class="amap" href="${esc(`https://uri.amap.com/search?keyword=${enc(s.zh||s.name)}&city=310000&callnative=1`)}">고덕에서 검색해보기</a>`:''}</div>
+ <div class="row2">${key==='start'?`<div><label for="f-time">출발 시각</label><input id="f-time" type="time" value="${esc(s.time||'')}"></div>`:''}
+ ${key!=='end'?`<div><label for="f-stay">머무는 시간(분)</label><input id="f-stay" type="number" min="0" step="5" value="${esc(s.stay??60)}"></div>`:''}
+ ${!isA?`<div><label for="f-want">희망 시작 시각 (선택)</label><input id="f-want" type="time" value="${esc(s.want||'')}"></div>`:''}
+ ${key==='end'?`<div><label for="f-dl">도착 마감 시각 (선택)</label><input id="f-dl" type="time" value="${esc(s.deadline||'')}"></div>`:''}</div>
+ ${!isA?`<label style="display:flex;gap:8px;align-items:center"><input id="f-lock" type="checkbox" style="width:22px;height:22px" ${s.lock?'checked':''}> 최적화할 때 이 순서 고정</label>`:''}
+ ${!isA&&!isNew?'':''}<label for="f-note">메모</label><textarea id="f-note" rows="3">${esc(s.note||'')}</textarea>
+ ${!isNew&&!isA?`<label for="f-day">다른 날로 옮기기</label><select id="f-day">${S.days.map((dd,i)=>`<option value="${i}" ${i===cur?'selected':''}>${esc(dd.label)}</option>`).join('')}</select>`:''}
+ <div class="bar" style="margin-top:16px"><button class="btn pri" data-act="savestop" data-key="${esc(key)}">저장</button><button class="btn" data-act="close">취소</button>${!isNew&&!isA?`<button class="btn" data-act="del" data-key="${esc(key)}" style="margin-left:auto">삭제</button>`:''}</div>`;
+ $('#modal').classList.add('on');$('#modal')._key=key;
+ const pre=$('#f-pre');if(pre)pre.onchange=()=>{const p=PRESETS[pre.value];if(!p)return;$('#f-name').value=p[0];$('#f-zh').value=p[1];$('#f-ll').value=p[2]+','+p[3]};
+ setTimeout(()=>$('#f-name')?.focus(),50)}
+function readForm(s){s.name=$('#f-name').value.trim()||'이름 없는 장소';s.zh=$('#f-zh').value.trim();
+ const ll=$('#f-ll').value.split(/[,\s]+/).map(Number).filter(n=>!isNaN(n)&&n!==0);
+ if(ll.length===2){let[a,b]=ll;if(a<b)[a,b]=[b,a];s.lng=a;s.lat=b}else{s.lng=null;s.lat=null}
+ const v=id=>$(id)?.value;if($('#f-time'))s.time=v('#f-time');if($('#f-stay'))s.stay=Math.max(0,+v('#f-stay')||0);if($('#f-want'))s.want=v('#f-want')||'';if($('#f-dl'))s.deadline=v('#f-dl')||'';if($('#f-lock'))s.lock=$('#f-lock').checked;s.note=v('#f-note')}
+function closeSheet(){$('#modal').classList.remove('on')}
+
+function openMore(){$('#sheet').innerHTML=`<h2>백업 · 설정</h2>
+ <p class="sub">편집 내용은 이 기기에 자동 저장돼요. 친구 폰으로 옮기려면 아래 코드를 복사해서 카톡으로 보내고, 친구가 「붙여넣기」에 넣으면 돼요.</p>
+ <div class="bar" style="margin-top:12px"><button class="btn pri" data-act="copycode">백업 코드 복사</button></div>
+ <label for="f-code">백업 코드 붙여넣기</label><textarea id="f-code" rows="4" placeholder="여기에 붙여넣기"></textarea>
+ <div class="bar" style="margin-top:10px"><button class="btn" data-act="import">불러오기</button><button class="btn" data-act="reset" style="margin-left:auto">처음 일정으로 초기화</button><button class="btn" data-act="close">닫기</button></div>`;$('#modal').classList.add('on')}
+
+/* ---------- 저장 · 공유 ---------- */
+function snap(){undoStack.push(JSON.stringify(S));if(undoStack.length>30)undoStack.shift()}
+let dirty=false,pubT=null,readOnly=false;
+function save(){S.saved=Date.now();try{localStorage.setItem('sh-trip',JSON.stringify(S))}catch(e){}
+ if(artifactApi&&!readOnly){dirty=true;clearTimeout(pubT);pubT=setTimeout(shareSave,2500)}syncLabel()}
+const changed=save;
+function syncLabel(){const el=$('#sync');if(!el)return;el.textContent=artifactApi&&!readOnly?(dirty?'친구 화면에 반영 중…':'✓ 친구와 같은 화면으로 동기화돼요'):readOnly?'보기 전용 — 이 기기에만 저장돼요':'이 기기에 자동 저장 · 친구에겐 「백업」 코드로'}
+let artifactApi=null;
+try{window.claude?.use?.('artifact')?.then(a=>{artifactApi=a;syncLabel()}).catch(()=>{})}catch(e){}
+async function shareSave(){if(!artifactApi)return;S.saved=Date.now();const json=JSON.stringify(S).replace(/</g,'\\u003c');
+ const html=`<!DOCTYPE html>\n<html lang="ko">\n<head>${document.head.innerHTML}</head>\n<body>\n<div id="app"></div>\n<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>\n<div class="toast" id="toast"></div>\n<script id="state" type="application/json">${json}<\/script>\n<script id="app-js">${$('#app-js').textContent}<\/script>\n</body>\n</html>`;
+ try{sessionStorage.setItem('sh-cur',cur)}catch(e){}try{await artifactApi.publish(html);dirty=false;syncLabel()}catch(e){const m=String(e?.code||e?.message||e);if(/not_granted|not_writer/.test(m)){readOnly=true;dirty=false;syncLabel()}else{dirty=false;toast('친구가 동시에 고쳐서 친구 쪽 내용으로 맞췄어요')}}}
+
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2600)}
+async function copy(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg||'복사했어요')}catch(e){toast('복사가 막혔어요 — 길게 눌러 직접 복사해주세요')}}
+
+/* ---------- 이벤트 ---------- */
+document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab]');if(!t)return;const day=S.days[cur];const st=day.stops;
+ if(t.dataset.ck){const c=S.checks.find(x=>x.id===t.dataset.ck);if(c){c[t.dataset.who]=!c[t.dataset.who];changed();renderCheck()}return}
+ if(t.dataset.delck){S.checks=S.checks.filter(x=>x.id!==t.dataset.delck);changed();renderCheck();return}
+ if(t.dataset.tab!=null){cur=+t.dataset.tab;try{sessionStorage.setItem('sh-cur',cur)}catch(e){}view=null;pinFor=null;render();return}
+ if(t.dataset.z!=null){const z=+t.dataset.z;if(z===0)view=null;else view.span/=z;drawMap(day,plan(day));return}
+ if(t.dataset.copy){copy(t.dataset.copy,'중국어를 복사했어요 — 택시 기사님께 보여주세요');return}
+ if(t.dataset.edit){openEdit(t.dataset.edit);return}
+ if(t.dataset.pin){pinFor=t.dataset.pin;render();$('#fig').scrollIntoView({behavior:'smooth',block:'center'});return}
+ if(t.dataset.up||t.dataset.down){const id=t.dataset.up||t.dataset.down,i=st.findIndex(s=>s.id===id),j=i+(t.dataset.up?-1:1);if(j<0||j>=st.length)return;snap();[st[i],st[j]]=[st[j],st[i]];save();render();return}
+ const a=t.dataset.act;if(!a)return;
+ if(a==='opt')optimize();
+ else if(a==='add'){draft=null;openEdit('__new')}
+ else if(a==='undo'){const p=undoStack.pop();if(p){S=JSON.parse(p);save();render();toast('되돌렸어요')}}
+ else if(a==='share')shareSave();
+ else if(a==='more')openMore();
+ else if(a==='close'){closeSheet();draft=null}
+ else if(a==='pincancel'){pinFor=null;render();bindMap()}
+ else if(a==='pickmap'){const k=$('#modal')._key;if(k==='__new'&&draft)readForm(draft);closeSheet();pinFor=k;render();toast('지도를 탭하세요');}
+ else if(a==='savestop'){const k=t.dataset.key;snap();if(k==='__new'){const s=draft||{id:uid()};readForm(s);s.id=s.id||uid();const ti=st.findIndex(x=>x.tail);if(ti<0)st.push(s);else st.splice(ti,0,s);draft=null}else{const s=findStop(k);readForm(s);const nd=$('#f-day');if(nd&&+nd.value!==cur){day.stops=st.filter(x=>x!==s);S.days[+nd.value].stops.push(s)}}
+  save();closeSheet();render();bindMap()}
+ else if(a==='del'){snap();day.stops=st.filter(s=>s.id!==t.dataset.key);save();closeSheet();render();toast('삭제했어요 — 되돌리기 가능')}
+ else if(a==='copycode')copy(btoa(unescape(encodeURIComponent(JSON.stringify(S)))),'백업 코드를 복사했어요');
+ else if(a==='import'){try{const o=JSON.parse(decodeURIComponent(escape(atob($('#f-code').value.trim()))));if(!o.days)throw 0;snap();S=o;save();closeSheet();render();toast('불러왔어요')}catch(err){toast('코드가 올바르지 않아요')}}
+ else if(a==='reset'){snap();S=JSON.parse(JSON.stringify(DEFAULT));save();closeSheet();view=null;render();toast('초기화했어요 — 되돌리기 가능')}
+});
+window.addEventListener('hashchange',()=>{render();scrollTo(0,0)});
+$('#modal').addEventListener('click',e=>{if(e.target.id==='modal'){closeSheet();draft=null}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
+const ro=new ResizeObserver(()=>{if($('#fig')&&page()==='plan')drawMap(S.days[cur],plan(S.days[cur]))});
+render();ro.observe(document.body);
+}
+</script>
+</body>
+</html>
