@@ -283,12 +283,13 @@ const PRESETS=[['테디베어 카페 (13DE MARZO 우캉루)','13DE MARZO 安福�
 const RIVER=[[121.455,31.175],[121.478,31.190],[121.497,31.205],[121.494,31.222],[121.496,31.234],[121.499,31.242],[121.508,31.248],[121.522,31.250],[121.537,31.255],[121.548,31.268],[121.556,31.290],[121.565,31.320]];
 
 const HJYQ={name:'헌지우이치엔 양꼬치 (제일백화점)',zh:'很久以前羊肉串(南京路第一百货店)',lng:121.4763,lat:31.2353,type:'food',menu:'양꼬치 12꼬치 ¥69.8 (6꼬치 ¥34.9) + 차돌·삼겹·새우',price:'1인 평균 약 ¥88',stay:90,lock:true,note:'디즈니 나오면서 위챗으로 원격 줄서기 → 지하철 11호선·2호선이나 택시로 · 끝나면 호텔까지 걸어서 10분'};
+const RTM={name:'따룬파 평형관점 (大润发)',zh:'大润发 平型关店 静安区平型关路11号',lng:121.4560,lat:31.2625,type:'shop',stay:60,lock:true,note:'한국인이 제일 많이 가는 지점 · 입구에 짐 보관함(시간당 ¥5) · 한국어 안내·한국인 전용 계산대 · 즉시 환급 가능 · 夏威夷果·小黄鸭蛋卷·江小白 인기'};
 const KPG={name:'대한민국 임시정부 청사',zh:'大韩民国临时政府旧址 马当路306弄4号',lng:121.4747,lat:31.2172,type:'spot',stay:75,note:'신천지 옆 골목 · 입장료 약 ¥20 · 내부 사진 촬영 금지 · 운영시간은 전날 고덕지도에서 확인'};
 const D1STOPS=()=>[
    {...HOTEL,id:'d1h',name:'호텔 짐 맡기기',stay:15,lock:true,note:'체크인 전이면 프런트에 짐 보관'},
    {id:'d1w',name:'우캉루 · 테디베어 카페',zh:'13DE MARZO 安福路318号',lng:121.4403,lat:31.2133,type:'cafe',menu:'곰돌이 인형이 컵에 달려 나오는 음료 (리치 로즈 밀크티 추천 후기)',price:'',stay:40,lock:true,note:'안푸루·우캉루 교차로 · 음료 대기 30분 이상 흔함 → QR로 먼저 주문 · 다음: 안푸루 따라 原力飞行·HARMAY'},
-   {id:'d1a',name:'原力飞行 · HARMAY 话梅',zh:'原力飞行 安福路322号 / HARMAY话梅 安福路195号',lng:121.4425,lat:31.2137,type:'spot',stay:20,lock:true,note:'原力飞行 = 三顿半 커피 플래그십 · 캡슐 커피 선물용 · HARMAY 1층 창고 인테리어 사진'},
-   {id:'d1f',name:'凡几 소품숍',zh:'凡几 武康路370号',lng:121.4372,lat:31.2072,type:'spot',stay:15,lock:true,note:'중국 독립 브랜드 생활 소품 · 기념품 고르기'},
+   {id:'d1a',name:'原力飞行 · HARMAY 话梅',zh:'原力飞行 安福路322号 / HARMAY话梅 安福路195号',lng:121.4425,lat:31.2137,type:'shop',stay:20,lock:true,note:'原力飞行 = 三顿半 커피 플래그십 · 캡슐 커피 선물용 · HARMAY 1층 창고 인테리어 사진'},
+   {id:'d1f',name:'凡几 소품숍',zh:'凡几 武康路370号',lng:121.4372,lat:31.2072,type:'shop',stay:15,lock:true,note:'중국 독립 브랜드 생활 소품 · 기념품 고르기'},
    {id:'d1m',name:'우캉맨션 사진',zh:'武康大楼 淮海中路1842号',lng:121.4366,lat:31.2058,type:'spot',stay:15,lock:true,note:'길 건너 횡단보도 쪽에서 건물 전체 넣어 찍기 · 끝나면 여기서 택시'},
    {id:'d1c',name:'난징동루 · 치이카와 스토어',zh:'南京东路139号',lng:121.4875,lat:31.2405,stay:40,lock:true,note:'난징동루 보행가 걷다가 와이탄 쪽 끝에 치이카와 · 2층 구조라 1층에서 먼저 고르기'},
    {id:'d1p',name:'photowith (초록배경 사진)',zh:'',lng:null,lat:null,stay:30,lock:true,note:'위치 미지정: ✎ 편집 → 지도에서 핀 찍기 또는 좌표 붙여넣기'},
@@ -311,7 +312,7 @@ const DEFAULT={v:1,days:[
  {id:'d3',label:'셋째 날',title:'여유 · 출국',color:'#a07a2c',
   start:{...HOTEL,id:'s3',time:'10:00',stay:0,note:'체크아웃 12:00 전 — 짐은 프런트 보관 후 외출 가능'},
   end:{...PVG,id:'e3',deadline:'14:45',note:'MU5051 17:45 출발 → 3시간 전 도착 권장'},
-  stops:[{id:'kpg',...KPG},{...HOTEL,id:'tail3',name:'호텔에서 짐 찾기',stay:15,lock:true,tail:true,note:'새로 추가한 장소는 이 앞에 들어가요'}]}
+  stops:[{id:'kpg',...KPG},{id:'rtm',...RTM},{...HOTEL,id:'tail3',name:'호텔에서 짐 찾기',stay:15,lock:true,tail:true,note:'새로 추가한 장소는 이 앞에 들어가요'}]}
 ],checks:null};
 const CHECKS=[
  ['입국 · 서류','',[
@@ -361,6 +362,7 @@ if(!S.yj){S.yj=1;const d1=S.days.find(d=>d.id==='d1');if(d1){const n=D1STOPS().f
 if(!S.ljz){S.ljz=1;const d1=S.days.find(d=>d.id==='d1');if(d1){const N=D1STOPS();const o=d1.stops.find(x=>x.id==='d1o');if(o){const n=N.find(x=>x.id==='d1o');Object.assign(o,{stay:n.stay,note:n.note})}let at=d1.stops.findIndex(x=>x.id==='d1o');at=at<0?d1.stops.length:at+1;['d1l','d1b'].forEach(id=>{if(!d1.stops.some(x=>x.id===id)){d1.stops.splice(at,0,{...N.find(x=>x.id===id)})}at=d1.stops.findIndex(x=>x.id===id)+1})}}
 if(!S.wk2){S.wk2=1;const d1=S.days.find(d=>d.id==='d1');if(d1){const N=D1STOPS();['d1w','d1c','d1p'].forEach(id=>{const o=d1.stops.find(x=>x.id===id),n=N.find(x=>x.id===id);if(o&&n){o.stay=n.stay;o.note=n.note}});let at=d1.stops.findIndex(x=>x.id==='d1w')+1;if(at>0)['d1a','d1f','d1m'].forEach(id=>{if(!d1.stops.some(x=>x.id===id))d1.stops.splice(at,0,{...N.find(x=>x.id===id)});at=d1.stops.findIndex(x=>x.id===id)+1})}}
 if(!S.ord3){S.ord3=1;const d1=S.days.find(d=>d.id==='d1');if(d1){const N=D1STOPS(),ids=N.map(x=>x.id);const old=d1.stops;const out=ids.map(id=>{const o=old.find(x=>x.id===id),n=N.find(x=>x.id===id);return o&&['d1o','d1l','d1b','d1k'].includes(id)?Object.assign(o,{note:n.note,stay:n.stay}):(o||{...n})});old.forEach(x=>{if(!ids.includes(x.id))out.push(x)});d1.stops=out}}
+if(!S.rtm){S.rtm=1;S.days.forEach(d=>d.stops.forEach(x=>{if(x.id==='d1a'||x.id==='d1f')x.type='shop'}));const d3=S.days.find(d=>d.id==='d3');if(d3&&!d3.stops.some(x=>/따룬파|大润发/.test(x.name+x.zh))){const ti=d3.stops.findIndex(x=>x.tail);d3.stops.splice(ti<0?d3.stops.length:ti,0,{id:'rtm',...RTM})}}
 if(!S.kpg){S.kpg=1;const d3=S.days.find(d=>d.id==='d3');if(d3&&!d3.stops.some(x=>/임시정부/.test(x.name))){const ti=d3.stops.findIndex(x=>x.tail);d3.stops.splice(ti<0?d3.stops.length:ti,0,{id:'kpg',...KPG})}}
 if(!S.hjyq){S.hjyq=1;const d2=S.days.find(d=>d.id==='d2');if(d2&&!d2.stops.some(x=>/헌지우이치엔/.test(x.name))){const di=d2.stops.findIndex(x=>/디즈니/.test(x.name));d2.stops.splice(di<0?d2.stops.length:di+1,0,{id:'hjyq',...HJYQ})}}
 [...(S.checks||[]),...(S.gifts||[])].forEach(x=>{['t','d','sec'].forEach(k=>{if(x[k])x[k]=x[k].replace('(1/4)','(둘째 날)').replace(/^1\/4 /,'둘째 날 ')})});
@@ -639,7 +641,7 @@ function rowHTML(day,r,i,n){const s=r.s,isA=!!r.anchor,leg=r.tr?`<li class="leg"
  const tm=r.anchor==='start'?`${toT(r.beg)}<small>${s.stay?'~'+toT(r.leave):'출발'}</small>`:r.anchor==='end'?`${toT(r.arr)}<small>도착</small>`:`${toT(r.beg)}<small>~${toT(r.leave)}</small>`;
  const editKey=r.anchor?r.anchor:s.id;
  return`${leg}<li class="stop"><div class="time">${tm}</div><div class="card ${isA?'anchor':''} ${s.lng==null?'nopin':''}">
-  <div class="ttl"><span class="num">${num}</span>${esc(s.name)}${s.type==='food'?'<span class="chip">식당</span>':s.type==='cafe'?'<span class="chip">카페·디저트</span>':s.type==='night'?'<span class="chip">야경 스팟</span>':s.type==='spot'?'<span class="chip">사진 스팟</span>':''}${s.lock?'<span class="lock">순서 고정</span>':''}${s.want&&!isA?`<span class="lock">희망 ${esc(s.want)}</span>`:''}</div>
+  <div class="ttl"><span class="num">${num}</span>${esc(s.name)}${s.type==='food'?'<span class="chip">식당</span>':s.type==='cafe'?'<span class="chip">카페·디저트</span>':s.type==='night'?'<span class="chip">야경 스팟</span>':s.type==='spot'?'<span class="chip">사진 스팟</span>':s.type==='shop'?'<span class="chip">쇼핑</span>':''}${s.lock?'<span class="lock">순서 고정</span>':''}${s.want&&!isA?`<span class="lock">희망 ${esc(s.want)}</span>`:''}</div>
   <div class="meta">${s.zh?`<span class="zh">${esc(s.zh)}</span> · `:''}${isA?(r.anchor==='start'?(s.stay?`${s.stay}분 머무름`:''):''):`${s.stay}분 머무름`}${s.lng==null?' · <b>위치 미지정</b>':''}${r.beg>r.arr+1&&!isA?` · ${Math.round(r.beg-r.arr)}분 대기`:''}</div>
   ${s.menu||s.price?`<div class="menu"><span>추천 메뉴</span> ${esc(s.menu||'-')}${s.price?`<b>${esc(s.price)}</b>`:''}</div>`:''}
   ${s.note?`<div class="note">${esc(s.note)}</div>`:''}${warn}
