@@ -274,7 +274,7 @@ const GIFTS=[
   ['상하이 한정 키링·마그넷','','','중국풍 의상 캐릭터 디자인'],
   ['상하이 레터링 머그·텀블러','','','']]]];
 function seedGifts(){const out=[];GIFTS.forEach(([sec,hint,items])=>items.forEach(([t,zh,p,d])=>out.push({id:uid(),sec,t,zh:zh||'',p:p||'',d:d||'',a:false,b:false})));return out}
-const PRESETS=[
+const PRESETS=[['대한민국 임시정부 청사','大韩民国临时政府旧址',121.4747,31.2172],
  ['와이탄 (외탄)','外滩',121.4905,31.2400],['예원','豫园',121.4920,31.2272],['난징동루 보행가','南京东路步行街',121.4800,31.2385],
  ['동방명주','东方明珠',121.4997,31.2397],['상하이 타워','上海中心大厦',121.5055,31.2335],['신천지','新天地',121.4750,31.2195],
  ['티엔즈팡','田子坊',121.4665,31.2105],['우캉맨션','武康大楼',121.4375,31.2045],['안푸루','安福路',121.4400,31.2120],
@@ -283,6 +283,7 @@ const PRESETS=[
 const RIVER=[[121.455,31.175],[121.478,31.190],[121.497,31.205],[121.494,31.222],[121.496,31.234],[121.499,31.242],[121.508,31.248],[121.522,31.250],[121.537,31.255],[121.548,31.268],[121.556,31.290],[121.565,31.320]];
 
 const HJYQ={name:'헌지우이치엔 양꼬치 (제일백화점)',zh:'很久以前羊肉串(南京路第一百货店)',lng:121.4763,lat:31.2353,type:'food',menu:'양꼬치 12꼬치 ¥69.8 (6꼬치 ¥34.9) + 차돌·삼겹·새우',price:'1인 평균 약 ¥88',stay:90,lock:true,note:'디즈니 나오면서 위챗으로 원격 줄서기 → 지하철 11호선·2호선이나 택시로 · 끝나면 호텔까지 걸어서 10분'};
+const KPG={name:'대한민국 임시정부 청사',zh:'大韩民国临时政府旧址 马当路306弄4号',lng:121.4747,lat:31.2172,type:'spot',stay:75,note:'신천지 옆 골목 · 입장료 약 ¥20 · 내부 사진 촬영 금지 · 운영시간은 전날 고덕지도에서 확인'};
 const DEFAULT={v:1,days:[
  {id:'d1',label:'첫째 날',title:'도착 · 시내 체험',color:'#a9533c',
   start:{...PVG,id:'s1',time:'10:00',stay:60,note:'MU5052 착륙 10:00 → 입국심사·수하물 약 1시간'},
@@ -301,7 +302,7 @@ const DEFAULT={v:1,days:[
  {id:'d3',label:'셋째 날',title:'여유 · 출국',color:'#a07a2c',
   start:{...HOTEL,id:'s3',time:'10:00',stay:0,note:'체크아웃 12:00 전 — 짐은 프런트 보관 후 외출 가능'},
   end:{...PVG,id:'e3',deadline:'14:45',note:'MU5051 17:45 출발 → 3시간 전 도착 권장'},
-  stops:[{...HOTEL,id:'tail3',name:'호텔에서 짐 찾기',stay:15,lock:true,tail:true,note:'새로 추가한 장소는 이 앞에 들어가요'}]}
+  stops:[{id:'kpg',...KPG},{...HOTEL,id:'tail3',name:'호텔에서 짐 찾기',stay:15,lock:true,tail:true,note:'새로 추가한 장소는 이 앞에 들어가요'}]}
 ],checks:null};
 const CHECKS=[
  ['입국 · 서류','',[
@@ -345,6 +346,7 @@ if(!S||!S.days)S=JSON.parse(JSON.stringify(DEFAULT));
 if(!S.checks)S.checks=seedChecks();
 if(!S.gifts)S.gifts=seedGifts();
 if(!S.deliv)S.deliv=seedDeliv();
+if(!S.kpg){S.kpg=1;const d3=S.days.find(d=>d.id==='d3');if(d3&&!d3.stops.some(x=>/임시정부/.test(x.name))){const ti=d3.stops.findIndex(x=>x.tail);d3.stops.splice(ti<0?d3.stops.length:ti,0,{id:'kpg',...KPG})}}
 if(!S.hjyq){S.hjyq=1;const d2=S.days.find(d=>d.id==='d2');if(d2&&!d2.stops.some(x=>/헌지우이치엔/.test(x.name))){const di=d2.stops.findIndex(x=>/디즈니/.test(x.name));d2.stops.splice(di<0?d2.stops.length:di+1,0,{id:'hjyq',...HJYQ})}}
 [...(S.checks||[]),...(S.gifts||[])].forEach(x=>{['t','d','sec'].forEach(k=>{if(x[k])x[k]=x[k].replace('(1/4)','(둘째 날)').replace(/^1\/4 /,'둘째 날 ')})});
 if(!S.money)S.money={rate:195,items:[]};
