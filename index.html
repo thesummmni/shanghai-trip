@@ -424,7 +424,7 @@ function heroSVG(){
  <g mask="url(#m)"><g filter="url(#bl)" transform="translate(0 660) scale(1 -1)">${city}</g></g>
  <g stroke="var(--ink)" stroke-width="3" opacity=".7"><line x1="905" y1="330" x2="905" y2="200"/><line x1="905" y1="200" x2="940" y2="196"/></g><circle cx="944" cy="197" r="5" fill="var(--win)" class="lit"/>
  <rect y="329" width="1200" height="2" fill="var(--win)" opacity=".35"/></svg>`}
-const SECS=[['plan','Itinerary','동선표','하루씩 한 줄로'],['photo','Photo spots','사진 스팟','야경 · 낮'],['check','Before we leave','준비','한국에서 끝낼 것들'],['eat','Where to eat','맛집','한국인 픽'],['deliv','Room service','배달','호텔로 시키기'],['gift','Bring home','기념품','쇼핑 리스트'],['money','Expenses','가계부','정산']];
+const SECS=[['plan','Itinerary','동선표','하루씩 한 줄로'],['photo','Photo spots','사진 스팟','야경 · 낮'],['check','Before we leave','준비','한국에서 끝낼 것들'],['eat','Where to eat','맛집','한국인 픽'],['deliv','Room service','배달','호텔로 시키기'],['gift','Bring home','기념품','쇼핑 리스트']];
 function shead(k){const x=SECS.find(y=>y[0]===k);return`<div class="shead"><span class="kicker">${x[1]}</span><h2 class="stitle">${x[2]} <em>${x[3]}</em></h2></div>`}
 function shell(){$('#app').innerHTML=`
  <header class="topbar" id="topbar"><a href="#top" class="brand">Shanghai <span>’27</span></a><nav class="tnav" aria-label="섹션">${SECS.map(x=>`<a href="#${x[0]}">${x[2]}</a>`).join('')}</nav></header>
@@ -436,7 +436,7 @@ function shell(){$('#app').innerHTML=`
  ${SECS.map(x=>`<section class="chapter" id="${x[0]}"><div id="sec-${x[0]}"></div></section>`).join('')}
  <footer class="band foot2">Shanghai ’27</footer>`;
  const tb=$('#topbar'),cv=$('.cover');try{new IntersectionObserver(([e])=>tb.classList.toggle('show',!e.isIntersecting),{threshold:.15}).observe(cv)}catch(e){tb.classList.add('show')}}
-function renderAll(){render();renderPhoto();renderMoney();renderCheck();renderEat();renderDeliv();renderGift()}
+function renderAll(){render();renderPhoto();renderCheck();renderEat();renderDeliv();renderGift()}
 function render(){
  const day=S.days[cur];$('#plan').style.setProperty('--c',day.color);const P=plan(day);
  $('#sec-plan').innerHTML=`
@@ -563,41 +563,6 @@ function settle(){const M=S.money,I=M.items.filter(x=>!x.done),D=M.deps.filter(x
  I.forEach(x=>{const v=toKRW(x);if(x.payer==='fund')spent+=v;else paid[x.payer]+=v;if(x.split==='both'){share.a+=v/2;share.b+=v/2}else share[x.split]+=v});
  const R=dep-spent;const eff={a:paid.a-share.a,b:paid.b-share.b};eff[M.holder]-=R;
  return{paid,share,dep,spent,R,eff,total:share.a+share.b}}
-function renderMoney(){const M=S.money,st=settle();const open=M.items.filter(x=>!x.done);
- const byCat=CATS.map(c=>[c,open.filter(x=>x.cat===c).reduce((s,x)=>s+toKRW(x),0)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);const mx=Math.max(1,...byCat.map(x=>x[1]));
- const owe=st.eff.a>1?`쑴니 → 야콩 <b>${won(st.eff.a)}</b>`:st.eff.b>1?`야콩 → 쑴니 <b>${won(st.eff.b)}</b>`:'보낼 돈 없음';
- const rate=+M.rate||1,pct=st.dep>0?Math.max(0,Math.min(100,st.spent/st.dep*100)):0;
- const days=[[-1,'출발 전'],...S.days.map((d,i)=>[i,d.label])];
- const list=M.items.filter(x=>mtab==='open'?!x.done:x.done);const deps=M.deps.filter(x=>mtab==='open'?!x.done:x.done);
- $('#sec-money').innerHTML=`<main class="band">${shead('money')}
-  <div class="mtop">
-   <div class="card fund"><span class="kicker">공금 잔액</span><div class="mbig ${st.R<0?'neg':''}">${won(st.R)}</div><small class="sub">약 ${yuan(st.R/rate)} · 넣은 돈 ${won(st.dep)} 중 ${won(st.spent)} 씀</small>
-    <div class="prog" style="margin-top:12px"><i style="width:${pct}%;background:var(--gold)"></i></div>
-    ${st.R<0?'<div class="warn">공금이 모자라요 — 더 넣어주세요</div>':''}
-    <div class="seg" style="margin-top:12px"><span class="sub">공금 들고 있는 사람</span>${['a','b'].map(k=>`<button type="button" class="chipbtn ${M.holder===k?'on':''}" data-mholder="${k}">${WHO[k]}</button>`).join('')}</div>
-    <form class="deprow" id="depform"><div class="seg"><span class="sub">공금 넣기</span>${['a','b'].map(k=>`<button type="button" class="chipbtn ${dw.who===k?'on':''}" data-dwho="${k}">${WHO[k]}</button>`).join('')}</div>
-     <div class="amtrow"><input id="d-amt" class="minput" inputmode="decimal" placeholder="보낸 금액" aria-label="공금 금액"><select id="d-cur" class="minput" aria-label="통화"><option value="KRW" ${dw.cur==='KRW'?'selected':''}>₩ 원</option><option value="CNY" ${dw.cur==='CNY'?'selected':''}>¥ 위안</option></select></div><button class="btn">넣기</button></form>
-    ${deps.length?`<div class="deps">${deps.map(d=>`<span class="dchip">${WHO[d.who]} ${d.cur==='KRW'?won(d.amt):yuan(d.amt)}<button class="x" data-ddel="${esc(d.id)}" aria-label="삭제">×</button></span>`).join('')}</div>`:''}</div>
-   <div class="card fund"><span class="kicker">지금 정산하면</span><div class="mset">${owe}</div>
-    <small class="sub">남은 공금은 들고 있는 ${M.holder==='a'?'야콩이':'쑴니가'} 갖는 걸로 계산했어요 · 개인 카드로 낸 것도 포함</small>
-    <div class="mbars" style="margin-top:12px">${byCat.map(([c,v])=>`<div class="mrow"><span>${esc(c)}</span><i><b style="width:${v/mx*100}%"></b></i><em>${won(v)}</em></div>`).join('')||'<small class="sub">아직 지출 기록이 없어요</small>'}</div>
-    <div class="bar" style="margin:14px 0 0"><button class="btn" data-act="mcopy">카톡용 정산 복사</button><button class="btn" data-act="mdone" ${open.length||M.deps.some(d=>!d.done)?'':'disabled'}>정산 완료 처리</button></div>
-    <div class="bar" style="margin:6px 0 0"><label class="sub" for="m-rate" style="font-size:13px">환율 1위안 =</label><input id="m-rate" class="minput" style="width:90px" inputmode="decimal" value="${esc(M.rate)}"><span class="sub" style="font-size:13px">원</span><span class="sync"></span></div></div></div>
-  <form class="card mform" id="mform"><div class="chips">${CATS.map(c=>`<button type="button" class="chipbtn ${mf.cat===c?'on':''}" data-mcat="${esc(c)}">${esc(c)}</button>`).join('')}</div>
-   <div class="mgrid"><select id="m-day" class="minput" aria-label="날짜">${days.map(([i,l])=>`<option value="${i}" ${i===(mf.day??0)?'selected':''}>${esc(l)}</option>`).join('')}</select>
-   <input id="m-t" class="minput" placeholder="내용 (예: 지아지아탕바오)" aria-label="내용">
-   <div class="amtrow"><input id="m-amt" class="minput" inputmode="decimal" placeholder="금액" aria-label="금액"><select id="m-cur" class="minput" aria-label="통화"><option value="CNY" ${mf.cur==='CNY'?'selected':''}>¥ 위안</option><option value="KRW" ${mf.cur==='KRW'?'selected':''}>₩ 원</option></select></div></div>
-   <div class="mgrid2"><div class="seg" role="group" aria-label="낸 돈"><span class="sub">결제</span>${['fund','a','b'].map(k=>`<button type="button" class="chipbtn ${mf.payer===k?'on':''}" data-mpayer="${k}">${k==='fund'?'공금':WHO[k]+' 개인'}</button>`).join('')}</div>
-   <div class="seg" role="group" aria-label="나누기"><span class="sub">누구 것</span>${[['both','같이'],['a','야콩 것'],['b','쑴니 것']].map(([k,l])=>`<button type="button" class="chipbtn ${mf.split===k?'on':''}" data-msplit="${k}">${l}</button>`).join('')}</div>
-   <button class="btn pri">기록</button></div></form>
-  <div class="tabs" role="tablist" style="margin:22px 0 4px">${[['open','진행 중'],['done','정산 완료']].map(([k,l])=>`<button class="tab" role="tab" aria-selected="${mtab===k}" data-mtab="${k}" style="${mtab===k?'background:var(--gold);border-color:var(--gold);color:#1a1410':''}">${l} ${M.items.filter(x=>k==='open'?!x.done:x.done).length}</button>`).join('')}</div>
-  ${list.length?days.map(([i,l])=>{const L=list.filter(x=>x.day===i);if(!L.length)return'';return`<section class="sec"><h2>${esc(l)} <span class="hand">${won(L.reduce((s,x)=>s+toKRW(x),0))}</span></h2><div class="cl">${L.map(x=>`<div class="ci mi ${x.done?'done':''}"><div><div class="t">${esc(x.t||x.cat)} <span class="chip">${esc(x.cat)}</span></div><div class="d">${x.payer==='fund'?'공금':WHO[x.payer]+' 개인'} 결제 · ${x.split==='both'?'같이':WHO[x.split]+' 것'}</div></div><div class="mamt">${x.cur==='KRW'?won(x.amt):yuan(x.amt)}${x.cur==='CNY'?`<small>${won(toKRW(x))}</small>`:''}</div><div class="mact">${x.payer!=='fund'||x.done?`<button class="x" data-mtoggle="${esc(x.id)}">${x.done?'되돌리기':'정산완료'}</button>`:''}<button class="x" data-mdel="${esc(x.id)}">삭제</button></div></div>`).join('')}</div></section>`}).join(''):`<p class="sub" style="margin-top:14px">${mtab==='open'?'진행 중인 지출이 없어요.':'정산 완료한 지출이 없어요.'}</p>`}
-  <p class="foot">공금 잔액은 넣은 돈에서 「공금」으로 결제한 금액을 뺀 값이에요. 개인 카드로 낸 건 하나씩 「정산완료」로 옮길 수 있고, 공금 결제는 마지막에 한꺼번에 정산해요. 「정산 완료 처리」를 누르면 지금까지의 지출과 공금 입금이 정산 완료 탭으로 옮겨지고, 정산 금액이 0부터 다시 시작해요. 위안으로 쓴 건 위 환율로 원화로 바꿔 계산해요.</p></main>`;
- $('#mform').onsubmit=e=>{e.preventDefault();const amt=parseFloat($('#m-amt').value.replace(/,/g,''));if(!(amt>0)){toast('금액을 넣어주세요');return}
-  mf.day=+$('#m-day').value;mf.cur=$('#m-cur').value;S.money.items.push({id:uid(),day:mf.day,cat:mf.cat,t:$('#m-t').value.trim(),amt,cur:mf.cur,payer:mf.payer,split:mf.split});mtab='open';changed();renderMoney();toast('기록했어요')};
- $('#depform').onsubmit=e=>{e.preventDefault();const amt=parseFloat($('#d-amt').value.replace(/,/g,''));if(!(amt>0)){toast('금액을 넣어주세요');return}dw.cur=$('#d-cur').value;S.money.deps.push({id:uid(),who:dw.who,amt,cur:dw.cur});changed();renderMoney();toast(`${WHO[dw.who]} 공금 넣었어요`)};
- $('#m-rate').onchange=e=>{const v=parseFloat(e.target.value);if(v>0){S.money.rate=v;changed();renderMoney()}};syncLabel()}
-function moneyText(){const st=settle(),M=S.money;return['[상해 여행 정산]',`지출 ${won(st.total)} (1인 ${won(st.total/2)})`,`공금 넣은 돈 ${won(st.dep)} · 쓴 돈 ${won(st.spent)} · 남은 공금 ${won(st.R)} (${WHO[M.holder]}가 보관)`,st.eff.a>1?`→ 쑴니가 야콩에게 ${won(st.eff.a)} 보내기`:st.eff.b>1?`→ 야콩이 쑴니에게 ${won(st.eff.b)} 보내기`:'→ 보낼 돈 없음',`(환율 1위안=${M.rate}원)`].join('\n')}
 function inDay(f,i){return S.days[i].stops.some(x=>x.name===f.name)}
 function renderEat(){
  $('#sec-eat').innerHTML=`<main class="band">${shead('eat')}
@@ -765,15 +730,6 @@ async function copy(txt,msg){try{await navigator.clipboard.writeText(txt);toast(
 /* ---------- 이벤트 ---------- */
 document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab]');if(!t)return;const day=S.days[cur];const st=day.stops;
  if(t.dataset.ck){const c=S.checks.find(x=>x.id===t.dataset.ck);if(c){c[t.dataset.who]=!c[t.dataset.who];changed();renderCheck()}return}
- if(t.dataset.mcat){mf.cat=t.dataset.mcat;keepForm(()=>renderMoney());return}
- if(t.dataset.mholder){S.money.holder=t.dataset.mholder;changed();keepForm(()=>renderMoney());return}
- if(t.dataset.dwho){dw.who=t.dataset.dwho;keepForm(()=>renderMoney());return}
- if(t.dataset.ddel){S.money.deps=S.money.deps.filter(x=>x.id!==t.dataset.ddel);changed();renderMoney();return}
- if(t.dataset.mtab){mtab=t.dataset.mtab;keepForm(()=>renderMoney());return}
- if(t.dataset.mtoggle){const x=S.money.items.find(y=>y.id===t.dataset.mtoggle);if(x){x.done=!x.done;changed();renderMoney();toast(x.done?'정산 완료로 옮겼어요':'진행 중으로 되돌렸어요')}return}
- if(t.dataset.mpayer){mf.payer=t.dataset.mpayer;keepForm(()=>renderMoney());return}
- if(t.dataset.msplit){mf.split=t.dataset.msplit;keepForm(()=>renderMoney());return}
- if(t.dataset.mdel){S.money.items=S.money.items.filter(x=>x.id!==t.dataset.mdel);changed();renderMoney();return}
  if(t.dataset.addspot!=null){addSpot(+t.dataset.addspot,+t.dataset.day);return}
  if(t.dataset.sf){spotFilter=t.dataset.sf;spotFocus=null;renderPhoto();return}
  if(t.dataset.addfood!=null){addFood(+t.dataset.addfood,+t.dataset.day);return}
@@ -789,9 +745,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('button,[data-tab
  if(t.dataset.pin){pinFor=t.dataset.pin;render();$('#fig').scrollIntoView({behavior:'smooth',block:'center'});return}
  if(t.dataset.up||t.dataset.down){const id=t.dataset.up||t.dataset.down,i=st.findIndex(s=>s.id===id),j=i+(t.dataset.up?-1:1);if(j<0||j>=st.length)return;snap();[st[i],st[j]]=[st[j],st[i]];save();render();return}
  const a=t.dataset.act;if(!a)return;
- if(a==='mdone'){snap();S.money.items.forEach(x=>x.done=true);S.money.deps.forEach(d=>d.done=true);changed();renderMoney();toast('정산 완료 처리했어요 — 되돌리기 가능')}
- else if(a==='mcopy')copy(moneyText(),'정산 내용을 복사했어요');
- else if(a==='opt')optimize();
+ if(a==='opt')optimize();
  else if(a==='add'){draft=null;openEdit('__new')}
  else if(a==='undo'){const p=undoStack.pop();if(p){S=JSON.parse(p);save();renderAll();toast('되돌렸어요')}}
  else if(a==='share')shareSave();
