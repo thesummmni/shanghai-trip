@@ -290,7 +290,9 @@ const D1STOPS=()=>[
    {id:'d1c',name:'난징동루 · 치이카와 스토어',zh:'南京东路139号',lng:121.4875,lat:31.2405,stay:60,lock:true,note:'난징동루 보행가 걷다가 와이탄 쪽 끝에 치이카와 · 2층 구조라 1층에서 먼저 고르기'},
    {id:'d1p',name:'photowith (초록배경 사진)',zh:'',lng:null,lat:null,stay:45,lock:true,note:'위치 미지정: ✎ 편집 → 지도에서 핀 찍기 또는 좌표 붙여넣기'},
    {id:'d1y',name:'예원 · 왕홍 체험 (豫见汉服)',zh:'豫见汉服体验馆 上海市黄浦区丽水路81号紫锦城负一层B39',lng:121.4886,lat:31.2268,stay:150,lock:true,want:'17:00',note:'17:00 예약 완료 · 2명 H套餐 · 예약자 朴寿敏 · 예약금 1인 100위안 (하루 전까지 환불, 당일은 날짜 변경만) · 紫锦城 지하 1층 B39 · 해 진 뒤 예원 조명에서 촬영'},
-   {id:'d1o',name:'동방명주 앞 야경 사진',zh:'东方明珠 世纪大道1号',lng:121.4997,lat:31.2397,type:'night',stay:40,lock:true,want:'',note:'타워는 안 올라가고 사진만 · 루자쭈이 원형 육교(陆家嘴环形天桥)에서 올려 찍기 · 와이탄 쪽에서 찍고 싶으면 강 건너편'}];
+   {id:'d1o',name:'동방명주 앞 야경 사진',zh:'东方明珠 世纪大道1号',lng:121.4997,lat:31.2397,type:'night',stay:30,lock:true,want:'',note:'타워는 안 올라가고 사진만 · 타워 바로 아래 광장에서 올려 찍기'},
+   {id:'d1l',name:'루자쭈이 원형 육교',zh:'陆家嘴环形天桥',lng:121.5012,lat:31.2378,type:'night',stay:30,lock:true,note:'동방명주에서 걸어서 5분 · 육교 위에서 동방명주·상하이타워·진마오·SWFC 한 번에'},
+   {id:'d1b',name:'와이탄 야경',zh:'外滩观景平台',lng:121.4905,lat:31.2400,type:'night',stay:35,lock:true,note:'강 건너는 건 택시(터널) 또는 东昌路 페리 · 평소 조명은 밤 10시쯤 꺼져요 · 끝나면 호텔까지 걸어서 20분'}];
 const BUND2={name:'와이탄 야경',zh:'外滩观景平台',lng:121.4905,lat:31.2400,type:'night',stay:35,lock:true,note:'디즈니에서 바로 와이탄으로 · 평소 조명은 밤 10시쯤 꺼져요 · 동방명주를 대각선으로 넣어 찍기'};
 const DEFAULT={v:1,days:[
  {id:'d1',label:'첫째 날',title:'도착 · 시내 체험',color:'#a9533c',
@@ -352,6 +354,7 @@ if(!S.deliv)S.deliv=seedDeliv();
 if(!S.v3||S.v3<2){S.v3=2;const d1=S.days.find(d=>d.id==='d1');if(d1)d1.stops=D1STOPS();const d2=S.days.find(d=>d.id==='d2');if(d2){const dz=d2.stops.find(x=>/디즈니/.test(x.name));if(dz){dz.stay=690;dz.note=dz.note.replace(/ · 와이탄.*$/,'')+' · 와이탄 조명 꺼지기 전에 가려면 20시쯤 나오기'}if(!d2.stops.some(x=>/와이탄/.test(x.name))){const hi=d2.stops.findIndex(x=>/헌지우이치엔/.test(x.name));d2.stops.splice(hi<0?d2.stops.length:hi,0,{id:'bund2',...BUND2})}}}
 if(!S.opq){S.opq=1;const d1=S.days.find(d=>d.id==='d1');if(d1){const N=D1STOPS();['d1o','d1y'].forEach(id=>{const o=d1.stops.find(x=>x.id===id),n=N.find(x=>x.id===id);if(o&&n)Object.assign(o,{name:n.name,stay:n.stay,note:n.note})})}}
 if(!S.yj){S.yj=1;const d1=S.days.find(d=>d.id==='d1');if(d1){const n=D1STOPS().find(x=>x.id==='d1y'),o=d1.stops.find(x=>x.id==='d1y'||/왕홍/.test(x.name));if(o&&n)Object.assign(o,{name:n.name,zh:n.zh,lng:n.lng,lat:n.lat,want:n.want,note:n.note})}}
+if(!S.ljz){S.ljz=1;const d1=S.days.find(d=>d.id==='d1');if(d1){const N=D1STOPS();const o=d1.stops.find(x=>x.id==='d1o');if(o){const n=N.find(x=>x.id==='d1o');Object.assign(o,{stay:n.stay,note:n.note})}let at=d1.stops.findIndex(x=>x.id==='d1o');at=at<0?d1.stops.length:at+1;['d1l','d1b'].forEach(id=>{if(!d1.stops.some(x=>x.id===id)){d1.stops.splice(at,0,{...N.find(x=>x.id===id)})}at=d1.stops.findIndex(x=>x.id===id)+1})}}
 if(!S.kpg){S.kpg=1;const d3=S.days.find(d=>d.id==='d3');if(d3&&!d3.stops.some(x=>/임시정부/.test(x.name))){const ti=d3.stops.findIndex(x=>x.tail);d3.stops.splice(ti<0?d3.stops.length:ti,0,{id:'kpg',...KPG})}}
 if(!S.hjyq){S.hjyq=1;const d2=S.days.find(d=>d.id==='d2');if(d2&&!d2.stops.some(x=>/헌지우이치엔/.test(x.name))){const di=d2.stops.findIndex(x=>/디즈니/.test(x.name));d2.stops.splice(di<0?d2.stops.length:di+1,0,{id:'hjyq',...HJYQ})}}
 [...(S.checks||[]),...(S.gifts||[])].forEach(x=>{['t','d','sec'].forEach(k=>{if(x[k])x[k]=x[k].replace('(1/4)','(둘째 날)').replace(/^1\/4 /,'둘째 날 ')})});
