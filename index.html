@@ -226,6 +226,8 @@ const FOOD=[
  {name:'샤오양생지엔 (생전바오)',area:'난징동루 등 체인',zh:'小杨生煎',lng:null,lat:null,type:'food',menu:'생지엔바오(바닥 바삭한 군만두, 육즙 많음)',price:'1인 ¥20~34',note:'체인이라 난징동루 근처 지점 많아요 · 고덕에서 가까운 지점 검색'},
  {name:'라오지스 (우캉맨션 근처)',area:'우캉맨션',zh:'老吉士酒家 天平路41号',lng:121.4400,lat:31.2050,type:'food',menu:'홍샤오로우(간장 돼지고기 조림), 총요우반미엔 ¥38, 간장볶음밥 ¥58',price:'1인 ¥150~200 예상',note:'웨이팅 1시간은 기본 · 자리가 좁아요'},
  {name:'파기름 국수 (징안사)',area:'징안사',zh:'沪西老弄堂面馆(静安寺店) 北京西路1738号',lng:121.4470,lat:31.2275,type:'food',menu:'총요우반미엔(葱油拌面 파기름 비빔면)',price:'국수 ¥20~45',note:'영어 메뉴판 있음 · 징안사역 1번 출구 도보 6분'},
+ {name:'헌지우이치엔 양꼬치 (제일백화점)',zh:'很久以前羊肉串(南京路第一百货店)',lng:121.4763,lat:31.2353,type:'food',area:'난징동루',menu:'양꼬치 12꼬치 ¥69.8 (6꼬치 ¥34.9) + 차돌·삼겹·새우·구운 야채',price:'1인 평균 약 ¥88',note:'호텔에서 걸어서 10분 · 웨이팅이 아주 길어서 위챗 「很久以前羊肉串」 미니프로그램으로 원격 줄서기 · 디즈니에서 나올 때 번호표 뽑기'},
+ {name:'헌지우이치엔 (루자쭈이 상웨완점)',zh:'很久以前羊肉串(尚悦湾店)',lng:null,lat:null,type:'food',area:'루자쭈이',menu:'양꼬치 12꼬치 ¥69.8',price:'1인 평균 약 ¥88',note:'제일백화점점이 너무 밀릴 때 대안 · 호텔과 강 건너편 · 위치는 고덕에서 검색 후 핀 찍기'},
  {name:'예 상하이 (신천지)',zh:'夜上海 新天地',lng:121.4748,lat:31.2198,type:'food',area:'신천지',menu:'눈앞에서 썰어주는 오리구이 디너 세트',price:'디너 세트 1인 ¥188',note:'분위기 좋은 상하이 요리 · 저녁 예약 추천'},
  {name:'달러샵 훠궈',zh:'Dolar Shop 豆捞坊',lng:null,lat:null,type:'food',area:'쇼핑몰 지점 여러 곳',menu:'1인 냄비 훠궈',price:'앱에서 확인',note:'깔끔한 1인 팟 · 훠궈 초보·위생 중시라면 · 가까운 지점 검색'},
  {name:'리바이셰 게살국수 (와이탄·예원)',zh:'蟹黄面',lng:null,lat:null,type:'food',area:'와이탄 · 예원',menu:'게살국수(蟹黄面)',price:'국내 예약상품 기준 1인 약 ₩59,000~',note:'리버뷰 지점 · 한국 예약사이트로 미리 예약 가능'},
@@ -280,6 +282,7 @@ const PRESETS=[
  ['상하이 디즈니랜드','上海迪士尼乐园',121.6672,31.1440],['홍차오공항 T2','虹桥机场T2',121.3260,31.1960]];
 const RIVER=[[121.455,31.175],[121.478,31.190],[121.497,31.205],[121.494,31.222],[121.496,31.234],[121.499,31.242],[121.508,31.248],[121.522,31.250],[121.537,31.255],[121.548,31.268],[121.556,31.290],[121.565,31.320]];
 
+const HJYQ={name:'헌지우이치엔 양꼬치 (제일백화점)',zh:'很久以前羊肉串(南京路第一百货店)',lng:121.4763,lat:31.2353,type:'food',menu:'양꼬치 12꼬치 ¥69.8 (6꼬치 ¥34.9) + 차돌·삼겹·새우',price:'1인 평균 약 ¥88',stay:90,lock:true,note:'디즈니 나오면서 위챗으로 원격 줄서기 → 지하철 11호선·2호선이나 택시로 · 끝나면 호텔까지 걸어서 10분'};
 const DEFAULT={v:1,days:[
  {id:'d1',label:'첫째 날',title:'도착 · 시내 체험',color:'#a9533c',
   start:{...PVG,id:'s1',time:'10:00',stay:60,note:'MU5052 착륙 10:00 → 입국심사·수하물 약 1시간'},
@@ -293,7 +296,8 @@ const DEFAULT={v:1,days:[
  {id:'d2',label:'둘째 날',title:'디즈니 데이',color:'#7d6a8f',
   start:{...HOTEL,id:'s2',time:'07:20',stay:0,note:'지하철 2호선 → 11호선 디즈니역, 약 1시간'},
   end:{...HOTEL,id:'e2',note:''},
-  stops:[{id:uid(),name:'상하이 디즈니랜드',zh:'上海迪士尼乐园',lng:121.6672,lat:31.1440,stay:720,want:'08:30',lock:true,note:'운영시간·불꽃놀이 시간은 공식 앱(上海迪士尼度假区)에서 전날 확인'}]},
+  stops:[{id:uid(),name:'상하이 디즈니랜드',zh:'上海迪士尼乐园',lng:121.6672,lat:31.1440,stay:720,want:'08:30',lock:true,note:'운영시간·불꽃놀이 시간은 공식 앱(上海迪士尼度假区)에서 전날 확인'},
+   {id:'hjyq',...HJYQ}]},
  {id:'d3',label:'셋째 날',title:'여유 · 출국',color:'#a07a2c',
   start:{...HOTEL,id:'s3',time:'10:00',stay:0,note:'체크아웃 12:00 전 — 짐은 프런트 보관 후 외출 가능'},
   end:{...PVG,id:'e3',deadline:'14:45',note:'MU5051 17:45 출발 → 3시간 전 도착 권장'},
@@ -341,6 +345,7 @@ if(!S||!S.days)S=JSON.parse(JSON.stringify(DEFAULT));
 if(!S.checks)S.checks=seedChecks();
 if(!S.gifts)S.gifts=seedGifts();
 if(!S.deliv)S.deliv=seedDeliv();
+if(!S.hjyq){S.hjyq=1;const d2=S.days.find(d=>d.id==='d2');if(d2&&!d2.stops.some(x=>/헌지우이치엔/.test(x.name))){const di=d2.stops.findIndex(x=>/디즈니/.test(x.name));d2.stops.splice(di<0?d2.stops.length:di+1,0,{id:'hjyq',...HJYQ})}}
 [...(S.checks||[]),...(S.gifts||[])].forEach(x=>{['t','d','sec'].forEach(k=>{if(x[k])x[k]=x[k].replace('(1/4)','(둘째 날)').replace(/^1\/4 /,'둘째 날 ')})});
 if(!S.money)S.money={rate:195,items:[]};
 S.money.items=S.money.items.filter(x=>x.t!=='호텔 2박 (트립닷컴)');if(!S.money.deps)S.money.deps=[];if(!S.money.holder)S.money.holder='a';
